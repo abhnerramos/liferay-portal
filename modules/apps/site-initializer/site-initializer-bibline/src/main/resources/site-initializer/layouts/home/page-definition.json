@@ -78,9 +78,10 @@
 				  },
 				  {
 					"definition": {
-					  "fragment": { "key": "BASIC_COMPONENT-paragraph" },
-					  "fragmentConfig": {},
+					  "fragment": { "key": "BASIC_COMPONENT-spacer" },
+					  "fragmentConfig": { "height": "py-5" },
 					  "fragmentFields": [],
+					  "fragmentStyle": { "minHeight": "1000px" },
 					  "indexed": true
 					},
 					"type": "Fragment"
