@@ -1,0 +1,180 @@
+{
+	"pageElement": {
+		"pageElements": [
+			{
+				"definition": {
+				  "fragmentStyle": {
+					"backgroundFragmentImage": {
+					  "title": { "value": "IMG_5941.jpg" },
+					  "url": {
+						"value": "/documents/d/bibline-main/img_5941-jpg?download=true"
+					  }
+					}
+				  },
+				  "indexed": true,
+				  "layout": {
+					"borderWidth": 0,
+					"marginBottom": 0,
+					"marginLeft": 0,
+					"marginRight": 0,
+					"marginTop": 0,
+					"opacity": 100,
+					"paddingBottom": 0,
+					"paddingLeft": 0,
+					"paddingRight": 0,
+					"paddingTop": 0,
+					"widthType": "Fluid"
+				  }
+				},
+				"pageElements": [
+				  {
+					"definition": {
+					  "fragmentStyle": { "backgroundColor": "brandColor1" },
+					  "indexed": true,
+					  "layout": {
+						"borderWidth": 0,
+						"marginBottom": 0,
+						"marginLeft": 0,
+						"marginRight": 0,
+						"marginTop": 0,
+						"opacity": 100,
+						"paddingBottom": 0,
+						"paddingLeft": 0,
+						"paddingRight": 0,
+						"paddingTop": 0,
+						"widthType": "Fluid"
+					  }
+					},
+					"pageElements": [
+					  {
+						"definition": {
+						  "fragment": { "key": "header-0" },
+						  "fragmentConfig": {},
+						  "fragmentFields": [],
+						  "indexed": true
+						},
+						"type": "Fragment"
+					  },
+					  {
+						"definition": {
+						  "fragment": { "key": "quotes" },
+						  "fragmentConfig": {},
+						  "fragmentFields": [],
+						  "indexed": true
+						},
+						"type": "Fragment"
+					  }
+					],
+					"type": "Section"
+				  },
+				  {
+					"definition": {
+					  "fragment": { "key": "quote2" },
+					  "fragmentConfig": {},
+					  "fragmentFields": [],
+					  "indexed": true
+					},
+					"type": "Fragment"
+				  },
+				  {
+					"definition": {
+					  "fragment": { "key": "BASIC_COMPONENT-paragraph" },
+					  "fragmentConfig": {},
+					  "fragmentFields": [],
+					  "indexed": true
+					},
+					"type": "Fragment"
+				  },
+				  {
+					"definition": {
+					  "customCSS": ".[$FRAGMENT_CLASS$] {\nborder-top-left-radius: 50px;\nborder-top-right-radius: 50px;\nbackground-color: rgba(27,45,65, 0.7);\n}",
+					  "fragmentStyle": { "marginBottom": "-45px" },
+					  "indexed": true,
+					  "layout": {
+						"borderWidth": 0,
+						"marginBottom": 0,
+						"marginLeft": 0,
+						"marginRight": 0,
+						"marginTop": 0,
+						"opacity": 100,
+						"paddingBottom": 0,
+						"paddingLeft": 0,
+						"paddingRight": 0,
+						"paddingTop": 0,
+						"widthType": "Fluid"
+					  }
+					},
+					"pageElements": [
+					  {
+						"definition": {
+						  "indexed": true,
+						  "layout": {
+							"borderWidth": 0,
+							"marginBottom": 0,
+							"marginLeft": 0,
+							"marginRight": 0,
+							"marginTop": 0,
+							"opacity": 100,
+							"paddingBottom": 0,
+							"paddingLeft": 0,
+							"paddingRight": 0,
+							"paddingTop": 0,
+							"widthType": "Fluid"
+						  }
+						},
+						"pageElements": [
+						  {
+							"definition": {
+							  "fragment": { "key": "images" },
+							  "fragmentConfig": {},
+							  "fragmentFields": [],
+							  "indexed": true
+							},
+							"type": "Fragment"
+						  }
+						],
+						"type": "Section"
+					  }
+					],
+					"type": "Section"
+				  },
+				  {
+					"definition": {
+					  "customCSS": ".[$FRAGMENT_CLASS$] {\nborder-top-left-radius: 50px;\nborder-top-right-radius: 50px;\n}",
+					  "fragmentStyle": { "backgroundColor": "brandColor2" },
+					  "indexed": true,
+					  "layout": {
+						"borderWidth": 0,
+						"marginBottom": 0,
+						"marginLeft": 0,
+						"marginRight": 0,
+						"marginTop": 0,
+						"opacity": 100,
+						"paddingBottom": 0,
+						"paddingLeft": 0,
+						"paddingRight": 0,
+						"paddingTop": 0,
+						"widthType": "Fluid"
+					  }
+					},
+					"pageElements": [
+					  {
+						"definition": {
+						  "fragment": { "key": "footer" },
+						  "fragmentConfig": {},
+						  "fragmentFields": [],
+						  "indexed": true
+						},
+						"type": "Fragment"
+					  }
+					],
+					"type": "Section"
+				  }
+				],
+				"type": "Section"
+			  }
+			  
+		],
+		"type": "Root"
+	}
+}
