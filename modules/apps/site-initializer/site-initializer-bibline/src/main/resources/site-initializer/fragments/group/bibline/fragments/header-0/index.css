@@ -13,22 +13,22 @@
   }
   
   .menu li {
-	  float: right;align-content
+	  float: right;
   }
   
-  .menu li a {
-	  display: block;
+  .menu li p {
+	display: block;
 	text-align: center;
-	  color: white;
+	color: white;
 	padding: 25px 35px;
-	  background-color: transparent;
+	background-color: transparent;
 	border-radius: 10px;
 	cursor: pointer;
 	transition: all 0.5s ease-in-out;
-	  text-decoration: none; 
+	text-decoration: none; 
   }
   
-  .menu li a:hover {
+  .menu li p:hover {
 	  transform: scale(1.1,1.1);
 	  background-color: #FFFFFF;
 	  color: red;
