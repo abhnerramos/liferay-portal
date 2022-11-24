@@ -9,3 +9,11 @@ h1 {
 #differentColor{
 color: var(--brand-color-3);
 }
+
+#whoBleed{
+color: var(--brand-color-1);
+}
+
+#Bibline{
+color: var(--brand-color-3);
+}

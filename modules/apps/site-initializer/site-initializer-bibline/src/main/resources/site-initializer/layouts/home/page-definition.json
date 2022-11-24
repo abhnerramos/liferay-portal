@@ -54,7 +54,29 @@
 						  "indexed": true
 						},
 						"type": "Fragment"
-					  },
+					  }
+					],
+					"type": "Section"
+				  },
+				  {
+					"definition": {
+					  "fragmentStyle": { "marginTop": "-98px" },
+					  "indexed": true,
+					  "layout": {
+						"borderWidth": 0,
+						"marginBottom": 0,
+						"marginLeft": 0,
+						"marginRight": 0,
+						"marginTop": 0,
+						"opacity": 100,
+						"paddingBottom": 0,
+						"paddingLeft": 0,
+						"paddingRight": 0,
+						"paddingTop": 0,
+						"widthType": "Fluid"
+					  }
+					},
+					"pageElements": [
 					  {
 						"definition": {
 						  "fragment": { "key": "quotes" },
@@ -66,15 +88,6 @@
 					  }
 					],
 					"type": "Section"
-				  },
-				  {
-					"definition": {
-					  "fragment": { "key": "quote2" },
-					  "fragmentConfig": {},
-					  "fragmentFields": [],
-					  "indexed": true
-					},
-					"type": "Fragment"
 				  },
 				  {
 					"definition": {
@@ -177,5 +190,10 @@
 			  
 		],
 		"type": "Root"
+	},
+	"settings": {
+		"masterPage": {
+			"key": "public"
+		}
 	}
 }
