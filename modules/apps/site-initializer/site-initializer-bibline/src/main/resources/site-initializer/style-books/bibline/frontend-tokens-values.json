@@ -185,7 +185,7 @@
 	},
 	"fontFamilyBase": {
 		"cssVariableMapping": "font-family-base",
-		"value": "'Source Serif Pro', serif"
+		"value": "'Verdana'"
 	},
 	"fontFamilyMonospace": {
 		"cssVariableMapping": "font-family-monospace",
