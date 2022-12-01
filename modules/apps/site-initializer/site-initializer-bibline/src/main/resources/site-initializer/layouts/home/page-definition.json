@@ -5,11 +5,12 @@
 				"definition": {
 				  "fragmentStyle": {
 					"backgroundFragmentImage": {
-					  "title": { "value": "IMG_5941.jpg" },
-					  "url": {
-						"value": "/documents/d/bibline-main/img_5941-jpg?download=true"
-					  }
-					}
+					  "title": { "value": "photo_01.jpg" },
+					  "url": { "value": "[$DOCUMENT_URL:/site-initializer/documents/group/photo_01.jpg$]" }
+					},
+					"borderRadius": "",
+					"shadow": "",
+					"textAlign": "center"
 				  },
 				  "indexed": true,
 				  "layout": {
@@ -29,7 +30,13 @@
 				"pageElements": [
 				  {
 					"definition": {
-					  "fragmentStyle": { "backgroundColor": "brandColor1" },
+					  "fragmentStyle": {
+						"backgroundColor": "brandColor1",
+						"borderRadius": "",
+						"borderWidth": "0",
+						"shadow": "",
+						"textAlign": ""
+					  },
 					  "indexed": true,
 					  "layout": {
 						"borderWidth": 0,
@@ -50,7 +57,18 @@
 						"definition": {
 						  "fragment": { "key": "header-0" },
 						  "fragmentConfig": {},
-						  "fragmentFields": [],
+						  "fragmentFields": [
+							{
+							  "id": "imageLogo",
+							  "value": {
+								"fragmentImage": { "url": { "value_i18n": {} } },
+								"fragmentLink": {}
+							  }
+							},
+							{ "id": "button2", "value": { "fragmentLink": {} } },
+							{ "id": "button3", "value": { "fragmentLink": {} } },
+							{ "id": "button1", "value": { "fragmentLink": {} } }
+						  ],
 						  "indexed": true
 						},
 						"type": "Fragment"
@@ -60,7 +78,13 @@
 				  },
 				  {
 					"definition": {
-					  "fragmentStyle": { "marginTop": "-98px" },
+					  "fragmentStyle": {
+						"borderRadius": "",
+						"borderWidth": "0",
+						"marginTop": "-98px",
+						"shadow": "",
+						"textAlign": ""
+					  },
 					  "indexed": true,
 					  "layout": {
 						"borderWidth": 0,
@@ -81,7 +105,14 @@
 						"definition": {
 						  "fragment": { "key": "quotes" },
 						  "fragmentConfig": {},
-						  "fragmentFields": [],
+						  "fragmentFields": [
+							{ "id": "topQuote", "value": { "fragmentLink": {} } },
+							{ "id": "brandColor3", "value": { "fragmentLink": {} } },
+							{ "id": "brandColor1", "value": { "fragmentLink": {} } },
+							{ "id": "bottomQuote2", "value": { "fragmentLink": {} } },
+							{ "id": "bottomQuote", "value": { "fragmentLink": {} } },
+							{ "id": "differentColor", "value": { "fragmentLink": {} } }
+						  ],
 						  "indexed": true
 						},
 						"type": "Fragment"
@@ -94,7 +125,12 @@
 					  "fragment": { "key": "BASIC_COMPONENT-spacer" },
 					  "fragmentConfig": { "height": "py-5" },
 					  "fragmentFields": [],
-					  "fragmentStyle": { "minHeight": "1000px" },
+					  "fragmentStyle": {
+						"borderRadius": "",
+						"minHeight": "1000px",
+						"shadow": "",
+						"textAlign": ""
+					  },
 					  "indexed": true
 					},
 					"type": "Fragment"
@@ -102,7 +138,13 @@
 				  {
 					"definition": {
 					  "customCSS": ".[$FRAGMENT_CLASS$] {\nborder-top-left-radius: 50px;\nborder-top-right-radius: 50px;\nbackground-color: rgba(27,45,65, 0.7);\n}",
-					  "fragmentStyle": { "marginBottom": "-45px" },
+					  "fragmentStyle": {
+						"borderRadius": "",
+						"borderWidth": "0",
+						"marginBottom": "-45px",
+						"shadow": "",
+						"textAlign": ""
+					  },
 					  "indexed": true,
 					  "layout": {
 						"borderWidth": 0,
@@ -121,6 +163,7 @@
 					"pageElements": [
 					  {
 						"definition": {
+						  "fragmentStyle": { "borderWidth": "0" },
 						  "indexed": true,
 						  "layout": {
 							"borderWidth": 0,
@@ -141,7 +184,32 @@
 							"definition": {
 							  "fragment": { "key": "images" },
 							  "fragmentConfig": {},
-							  "fragmentFields": [],
+							  "fragmentFields": [
+								{ "id": "text3", "value": { "fragmentLink": {} } },
+								{ "id": "text1", "value": { "fragmentLink": {} } },
+								{ "id": "text2", "value": { "fragmentLink": {} } },
+								{
+								  "id": "imageLogo1",
+								  "value": {
+									"fragmentImage": { "url": { "value_i18n": {} } },
+									"fragmentLink": {}
+								  }
+								},
+								{
+								  "id": "imageLogo2",
+								  "value": {
+									"fragmentImage": { "url": { "value_i18n": {} } },
+									"fragmentLink": {}
+								  }
+								},
+								{
+								  "id": "imageLogo3",
+								  "value": {
+									"fragmentImage": { "url": { "value_i18n": {} } },
+									"fragmentLink": {}
+								  }
+								}
+							  ],
 							  "indexed": true
 							},
 							"type": "Fragment"
@@ -155,7 +223,13 @@
 				  {
 					"definition": {
 					  "customCSS": ".[$FRAGMENT_CLASS$] {\nborder-top-left-radius: 50px;\nborder-top-right-radius: 50px;\n}",
-					  "fragmentStyle": { "backgroundColor": "brandColor2" },
+					  "fragmentStyle": {
+						"backgroundColor": "brandColor2",
+						"borderRadius": "",
+						"borderWidth": "0",
+						"shadow": "",
+						"textAlign": ""
+					  },
 					  "indexed": true,
 					  "layout": {
 						"borderWidth": 0,
@@ -176,7 +250,12 @@
 						"definition": {
 						  "fragment": { "key": "footer" },
 						  "fragmentConfig": {},
-						  "fragmentFields": [],
+						  "fragmentFields": [
+							{ "id": "footer", "value": { "fragmentLink": {} } },
+							{ "id": "location1", "value": { "fragmentLink": {} } },
+							{ "id": "location2", "value": { "fragmentLink": {} } },
+							{ "id": "location", "value": { "fragmentLink": {} } }
+						  ],
 						  "indexed": true
 						},
 						"type": "Fragment"
