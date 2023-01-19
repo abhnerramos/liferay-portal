@@ -1,0 +1,56 @@
+<html>
+<head>
+<title>MyTestFile</title>
+</head>
+
+<body>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr><td rowspan="1" colspan="3">MyTestFile</td></tr>
+</thead>
+
+<tbody>
+<tr>
+<td>APPLICATION_MENU</td>
+<td>//button[@data-qa-id="applicationsMenu"]</td>
+<td></td>
+</tr>
+<tr>
+<td>CONTROL_PANEL</td>
+<td>//li[contains(@id,"ProductNavigationApplicationsMenuPortlet_tab_2")]</td>
+<td></td>
+</tr>
+<tr>
+<td>CONFIGURATION_SECTION</td>
+<td>//ul[@class="list-unstyled"]//li[@class="c-my-3"]//h2[contains(text(), 'Configuration')]</td>
+<td></td>
+</tr>
+<tr>
+<td>SIMULATION_BUTTON</td>
+<td>//*[@class="lexicon-icon lexicon-icon-simulation-menu-closed"]</td>
+<td></td>
+</tr>
+<tr>
+<td>CUSTOM_BUTTON</td>
+<td>//button[@data-device='custom']//span[@class='icon icon-monospaced']</td>
+<td></td>
+</tr>
+<tr>
+<td>HEIGHT_BUTTON_SIMULATION</td>
+<td>//input[contains(@id, 'SimulationPortlet_height')]</td>
+<td></td>
+</tr>
+<tr>
+<td>WIDTH_BUTTON_SIMULATION</td>
+<td>//input[contains(@id, 'SimulationPortlet_width')]</td>
+<td></td>
+</tr>
+<tr>
+<td>CLOSE_BUTTON</td>
+<td>//button[@aria-label='Close']//span[@class="inline-item"]//*[@class="lexicon-icon lexicon-icon-times"]</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
