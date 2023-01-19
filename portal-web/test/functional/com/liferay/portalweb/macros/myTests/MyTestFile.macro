@@ -1,0 +1,39 @@
+definition {
+
+	macro closeSimulation {
+		Click(locator1 = "MyTestFile#CLOSE_BUTTON");
+	}
+
+	macro openApplicationMenu {
+		Click(locator1 = "MyTestFile#APPLICATION_MENU");
+	}
+
+	macro openControlPanel {
+		Click(locator1 = "MyTestFile#CONTROL_PANEL");
+	}
+
+	macro openCustomOptions {
+		Click(locator1 = "MyTestFile#CUSTOM_BUTTON");
+	}
+
+	macro openSimulation {
+		Click(locator1 = "MyTestFile#SIMULATION_BUTTON");
+	}
+
+	macro setScreenHeight {
+		Click(locator1 = "MyTestFile#HEIGHT_BUTTON_SIMULATION");
+
+		Type(
+			locator1 = "MyTestFile#HEIGHT_BUTTON_SIMULATION",
+			value1 = "${heightValue}");
+	}
+
+	macro setScreenWidth {
+		Click(locator1 = "MyTestFile#WIDTH_BUTTON_SIMULATION");
+
+		Type(
+			locator1 = "MyTestFile#WIDTH_BUTTON_SIMULATION",
+			value1 = "${widthValue}");
+	}
+
+}
