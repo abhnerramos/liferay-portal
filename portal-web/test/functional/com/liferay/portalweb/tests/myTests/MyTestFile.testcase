@@ -12,9 +12,134 @@ definition {
 	}
 
 	tearDown {
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test");
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			Navigator.openURL();
+
+			ProductMenu.gotoPortlet(
+				category = "Content & Data",
+				portlet = "Forms");
+
+			FormsAdmin.teardownForms();
+
+			FormsAdmin.teardownElementSets();
+		}
+	}
+
+	@description = "Create a form with text and numeric field"
+	@priority = "5"
+	test CanBeCreatedWithTextAndNumericField {
+		FormsAdmin.addForm();
+
+		Form.editName(formName = "Abhner's First Form");
+
+		Form.editDescription(formDescription = "This is a description for First Form");
+
+		Form.gotoAddField(fieldType = "Text");
+
+		Form.editFieldLabelMetal(fieldValue = "Full Name");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Numeric");
+
+		Form.editFieldLabelMetal(fieldValue = "Age");
+
+		Form.addTranslation(localizedLanguage = "Portuguese (Brazil)");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Full Name",
+			label = "Nome Completo");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Age",
+			label = "Idade");
+
+		Form.editSuccessPage(
+			successPageDescription = "Suas informações foram recebidas com sucesso. Obrigado por preencher o formulário.",
+			successPageTitle = "Obrigado.");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormFields.viewTextLabel(fieldLabel = "Full Name");
+
+		FormFields.editText(
+			fieldLabel = "Text",
+			fieldName = "Full Name",
+			fieldValue = "Abhner Ramos");
+
+		FormFields.viewTextLabel(fieldLabel = "Age");
+
+		FormFields.editText(
+			fieldLabel = "Numeric",
+			fieldName = "Age",
+			fieldValue = "18");
+
+		FormPortlet.submitSuccessfully();
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
+
+		Alert.viewSuccessMessage();
+
+		Form.submitAgain();
+
+		FormPortletConfiguration.changeLanguage(
+			currentLanguage = "en-US",
+			newLanguage = "português-Brasil");
+
+		FormFields.viewTextLabel(fieldLabel = "Nome Completo");
+
+		FormFields.editText(
+			fieldLabel = "Text",
+			fieldName = "Nome Completo",
+			fieldValue = "Victor Cunha");
+
+		FormFields.viewTextLabel(fieldLabel = "Idade");
+
+		FormFields.editText(
+			fieldLabel = "Numeric",
+			fieldName = "Idade",
+			fieldValue = "24");
+
+		FormPortlet.submitSuccessfully();
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Suas informações foram recebidas com sucesso. Obrigado por preencher o formulário.",
+			successPageTitle = "Obrigado.");
+
+		Alert.viewSuccessMessage();
+
+		FormsAdminNavigator.closePublishedFormWindow();
+
+		FormsAdminNavigator.gotoViewEntries();
+
+		LexiconEntry.viewEntryContent(
+			key_rowAny = "Abhner Ramos",
+			rowEntry = "1");
+
+		LexiconEntry.viewEntryContent(
+			key_rowAny = "18",
+			rowEntry = "1");
+
+		LexiconEntry.viewEntryContent(
+			key_rowAny = "Victor Cunha",
+			rowEntry = "2");
+
+		LexiconEntry.viewEntryContent(
+			key_rowAny = "24",
+			rowEntry = "2");
 	}
 
 	@description = "Set Screen size to custom and validate values"
