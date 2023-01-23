@@ -117,4 +117,33 @@ definition {
 		}
 	}
 
+	@description = "Can Search Blogs"
+	@priority = "5"
+	test CanSearchBlogs {
+		task ("Adding a second blog entry") {
+			Blogs.addEntry(
+				entryContent = "Blog entry 2 content",
+				entryTitle = "Blog entry 2");
+		}
+
+		task ("Go to blogs portlet and search for 'Abhner'") {
+			ProductMenu.gotoPortlet(
+				category = "Content & Data",
+				portlet = "Blogs");
+
+			BlogsEntry.searchCP(
+				entryContent = "Abhners Blog Entry Content",
+				entrySearchTerm = "Abhner",
+				entryTitle = "Abhners Blog Entry Title");
+		}
+
+		task ("Validate that 'Abhners Blog' is the only blog on display") {
+			Blogs.viewEntryTitle(entryTitle = "Abhners Blog Entry Title");
+		}
+
+		task ("Validate 'Blog entry 2' does not appear when searching for 'Abhners Blog'") {
+			Blogs.viewEntryNotPresent(entryTitle = "Blog entry 2");
+		}
+	}
+
 }
