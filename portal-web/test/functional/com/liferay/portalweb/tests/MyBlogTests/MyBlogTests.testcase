@@ -1,0 +1,62 @@
+@component-name = "portal-lima"
+definition {
+
+	property testray.main.component.name = "Blogs";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+
+		Navigator.openURL();
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			BlogsEntry.tearDownCP();
+
+			JSONLayout.deletePublicLayout(
+				groupName = "Guest",
+				layoutName = "Blogs Page");
+		}
+	}
+
+	@description = "Can Create a Blog"
+	@priority = "5"
+	test CanCreateBlog {
+		task ("Add a Widget Page via API and go to the page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Guest",
+				layoutName = "Blogs Page");
+
+			Navigator.gotoPage(pageName = "Blogs Page");
+		}
+
+		task ("Add a Blog's Widget via API") {
+			JSONLayout.addWidgetToPublicLayout(
+				groupName = "Guest",
+				layoutName = "Blogs Page",
+				widgetName = "Blogs");
+		}
+
+		Refresh();
+
+		task ("Add a Blog's entry and Assert Seccess Message and Blog's Title and Content") {
+			Blogs.addEntry(
+				entryContent = "Abhners Blog Entry Content",
+				entryTitle = "Abhners Blog Entry Title");
+
+			Alert.viewSuccessMessageText(successMessage = "Your request completed successfully.");
+
+			BlogsEntry.viewEntryPG(
+				entryContent = "Abhners Blog Entry Content",
+				entryTitle = "Abhners Blog Entry Title");
+		}
+	}
+
+}
