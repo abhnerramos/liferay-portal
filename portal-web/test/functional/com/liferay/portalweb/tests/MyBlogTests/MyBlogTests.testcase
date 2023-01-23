@@ -9,6 +9,21 @@ definition {
 		User.firstLoginPG();
 
 		Navigator.openURL();
+
+		JSONLayout.addPublicLayout(
+			groupName = "Guest",
+			layoutName = "Blogs Page");
+
+		JSONLayout.addWidgetToPublicLayout(
+			groupName = "Guest",
+			layoutName = "Blogs Page",
+			widgetName = "Blogs");
+
+		Navigator.gotoPage(pageName = "Blogs Page");
+
+		Blogs.addEntry(
+			entryContent = "Abhners Blog Entry Content",
+			entryTitle = "Abhners Blog Entry Title");
 	}
 
 	tearDown {
@@ -46,7 +61,7 @@ definition {
 
 		Refresh();
 
-		task ("Add a Blog's entry and Assert Seccess Message and Blog's Title and Content") {
+		task ("Add a Blog's entry and Assert Success Message and Blog's Title and Content") {
 			Blogs.addEntry(
 				entryContent = "Abhners Blog Entry Content",
 				entryTitle = "Abhners Blog Entry Title");
@@ -56,6 +71,25 @@ definition {
 			BlogsEntry.viewEntryPG(
 				entryContent = "Abhners Blog Entry Content",
 				entryTitle = "Abhners Blog Entry Title");
+		}
+	}
+
+	@description = "Can Edit a Blog"
+	@priority = "5"
+	test CanEditBlog {
+		task ("Editing Blogs Content and Title") {
+			Blogs.editEntryPG(
+				entryContent = "Abhners Blog Entry Content",
+				entryContentEdit = "New Blogs Entry Content",
+				entryTitle = "Abhners Blog Entry Title",
+				entryTitleEdit = "New Blogs Entry Title",
+				groupName = "Guest");
+		}
+
+		task ("Validating Edited Blog's Content and Title") {
+			BlogsEntry.viewEntryPG(
+				entryContent = "New Blogs Entry Content",
+				entryTitle = "New Blogs Entry Title");
 		}
 	}
 
