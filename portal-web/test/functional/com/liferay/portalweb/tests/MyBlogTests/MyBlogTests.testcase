@@ -74,10 +74,34 @@ definition {
 		}
 	}
 
+	@description = "Can Delete a Blog"
+	@priority = "5"
+	test CanDeleteBlog {
+		task ("Adding a Second Blog Entry") {
+			Blogs.addEntry(
+				entryContent = "Blog entry 2 content",
+				entryTitle = "Blog entry 2");
+		}
+
+		task ("Deleting the First Blog Entry") {
+			BlogsEntry.moveToRecycleBinPG(
+				entryContent = "Abhners Blog Entry Content",
+				entryTitle = "Abhners Blog Entry Title");
+		}
+
+		task ("Asserting the Success Message and the New Content and Title") {
+			Alert.viewSuccessMessageText(successMessage = "Your request completed successfully.");
+
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blog entry 2 content",
+				entryTitle = "Blog entry 2");
+		}
+	}
+
 	@description = "Can Edit a Blog"
 	@priority = "5"
 	test CanEditBlog {
-		task ("Editing Blogs Content and Title") {
+		task ("Editing Blog's Content and Title") {
 			Blogs.editEntryPG(
 				entryContent = "Abhners Blog Entry Content",
 				entryContentEdit = "New Blogs Entry Content",
