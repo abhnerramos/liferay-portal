@@ -24,6 +24,11 @@ definition {
 			dmDocumentTitle = "DM 1 Document Title",
 			groupName = "Guest");
 
+		JSONDocument.addFile(
+			dmDocumentFile = "Document_2.addFiletxt",
+			dmDocumentTitle = "DM 2 Document Title",
+			groupName = "Guest");
+
 		Navigator.gotoPage(pageName = "DM Page");
 
 		ProductMenu.gotoPortlet(
@@ -58,6 +63,22 @@ definition {
 		Alert.viewSuccessMessageText(successMessage = "Your request completed successfully.");
 
 		AssertElementPresent(
+			key_rowEntry = "DM 1 Document Title",
+			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
+	}
+
+	@description = "Can Delete a Documents and Media"
+	@priority = "5"
+	test CanDeleteDM {
+		DMDocument.deleteCP(dmDocumentTitle = "DM 1 Document Title");
+
+		Alert.viewSuccessMessageText(successMessage = "The element DM 1 Document Title was moved to the Recycle Bin.");
+
+		AssertElementPresent(
+			key_rowEntry = "DM 2 Document Title",
+			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
+
+		AssertElementNotPresent(
 			key_rowEntry = "DM 1 Document Title",
 			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
 	}
