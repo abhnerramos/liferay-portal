@@ -14,14 +14,17 @@ definition {
 			groupName = "Guest",
 			layoutName = "DM Page");
 
-		Navigator.gotoPage(pageName = "DM Page");
-
 		JSONLayout.addWidgetToPublicLayout(
 			groupName = "Guest",
 			layoutName = "DM Page",
 			widgetName = "Documents and Media");
 
-		Refresh();
+		JSONDocument.addFile(
+			dmDocumentFile = "Document_1.addFiletxt",
+			dmDocumentTitle = "DM 1 Document Title",
+			groupName = "Guest");
+
+		Navigator.gotoPage(pageName = "DM Page");
 
 		ProductMenu.gotoPortlet(
 			category = "Content & Data",
@@ -56,6 +59,21 @@ definition {
 
 		AssertElementPresent(
 			key_rowEntry = "DM 1 Document Title",
+			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
+	}
+
+	@description = "Can Edit a Documents and Media"
+	@priority = "5"
+	test CanEditDM {
+		DMDocument.editCP(
+			dmDocumentFileEdit = "Document_2.txt",
+			dmDocumentTitle = "DM 1 Document Title",
+			dmDocumentTitleEdit = "DM 2 Document Title");
+
+		Alert.viewSuccessMessageText(successMessage = "Your request completed successfully.");
+
+		AssertElementPresent(
+			key_rowEntry = "DM 2 Document Title",
 			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
 	}
 
