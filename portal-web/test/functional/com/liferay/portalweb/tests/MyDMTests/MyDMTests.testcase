@@ -20,13 +20,13 @@ definition {
 			widgetName = "Documents and Media");
 
 		JSONDocument.addFile(
-			dmDocumentFile = "Document_1.addFiletxt",
-			dmDocumentTitle = "DM 1 Document Title",
+			dmDocumentFile = "Document_1.txt",
+			dmDocumentTitle = "DM1 Test",
 			groupName = "Guest");
 
 		JSONDocument.addFile(
-			dmDocumentFile = "Document_2.addFiletxt",
-			dmDocumentTitle = "DM 2 Document Title",
+			dmDocumentFile = "Document_2.txt",
+			dmDocumentTitle = "DM2 Test",
 			groupName = "Guest");
 
 		Navigator.gotoPage(pageName = "DM Page");
@@ -57,44 +57,54 @@ definition {
 	@priority = "5"
 	test CanCreateDM {
 		DMDocument.addCP(
-			dmDocumentFile = "Document_1.txt",
-			dmDocumentTitle = "DM 1 Document Title");
+			dmDocumentFile = "Document_3.txt",
+			dmDocumentTitle = "DM3 Test");
 
 		Alert.viewSuccessMessageText(successMessage = "Your request completed successfully.");
 
-		AssertElementPresent(
-			key_rowEntry = "DM 1 Document Title",
-			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
+		Navigator.gotoPage(pageName = "DM Page");
+
+		DMDocument.viewPG(dmDocumentTitle = "DM3 Test");
 	}
 
 	@description = "Can Delete a Documents and Media"
 	@priority = "5"
 	test CanDeleteDM {
-		DMDocument.deleteCP(dmDocumentTitle = "DM 1 Document Title");
+		DMDocument.deleteCP(dmDocumentTitle = "DM1 Test");
 
-		Alert.viewSuccessMessageText(successMessage = "The element DM 1 Document Title was moved to the Recycle Bin.");
+		Alert.viewSuccessMessageText(successMessage = "The element DM1 Test was moved to the Recycle Bin.");
 
 		AssertElementPresent(
-			key_rowEntry = "DM 2 Document Title",
+			key_rowEntry = "DM2 Test",
 			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
 
 		AssertElementNotPresent(
-			key_rowEntry = "DM 1 Document Title",
+			key_rowEntry = "DM1 Test",
 			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
+	}
+
+	@description = "Can Download a Documents and Media"
+	@priority = "5"
+	test CanDownloadDM {
+		DMDocument.downloadCP(
+			dmDocumentSize = "13 B",
+			dmDocumentTitle = "DM1 Test");
+
+		AssertTextNotPresent(value1 = "The requested resource could not be found.");
 	}
 
 	@description = "Can Edit a Documents and Media"
 	@priority = "5"
 	test CanEditDM {
 		DMDocument.editCP(
-			dmDocumentFileEdit = "Document_2.txt",
-			dmDocumentTitle = "DM 1 Document Title",
-			dmDocumentTitleEdit = "DM 2 Document Title");
+			dmDocumentFileEdit = "Document_4.txt",
+			dmDocumentTitle = "DM1 Test",
+			dmDocumentTitleEdit = "DM Edited Test");
 
 		Alert.viewSuccessMessageText(successMessage = "Your request completed successfully.");
 
 		AssertElementPresent(
-			key_rowEntry = "DM 2 Document Title",
+			key_rowEntry = "DM Edited Test",
 			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
 	}
 
