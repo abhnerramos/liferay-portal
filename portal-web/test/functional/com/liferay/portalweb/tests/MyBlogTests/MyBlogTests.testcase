@@ -92,6 +92,8 @@ definition {
 		task ("Asserting the Success Message and the New Content and Title") {
 			Alert.viewSuccessMessageText(successMessage = "Your request completed successfully.");
 
+			Blogs.viewEntryNotPresent(entryTitle = "Abhners Blog Entry Title");
+
 			BlogsEntry.viewEntryPG(
 				entryContent = "Blog entry 2 content",
 				entryTitle = "Blog entry 2");
