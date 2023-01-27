@@ -90,7 +90,7 @@ definition {
 			dmDocumentSize = "13 B",
 			dmDocumentTitle = "DM1 Test");
 
-		AssertTextNotPresent(value1 = "The requested resource could not be found.");
+		DMDocument.assertFileNameFromTempFolder(fileName = "DM1 Test");
 	}
 
 	@description = "Can Edit a Documents and Media"
