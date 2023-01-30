@@ -8727,6 +8727,10 @@ definition {
 			fieldName = "ObjectEdit141685",
 			pluralLabelName = "Objects Edit 141685");
 
+		Navigator.gotoBack();
+
+		ObjectPortlet.selectCustomObject(label = "Object Edit 141685");
+
 		ObjectAdmin.selectObjectScope(fieldOption = "Site");
 
 		CreateObject.selectPanelCategoryKey(panelCategoryKey = "Site Administration > Site Builder");
