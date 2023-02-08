@@ -36,9 +36,41 @@ definition {
 	@ignore = "Test Stub"
 	@priority = "5"
 	test CanAssertNotAccessible {
+		property osgi.module.configuration.file.names = "com.liferay.frontend.js.a11y.web.internal.configuration.FFA11yConfiguration.config";
+		property osgi.module.configurations = "enable=B\"true\"";
+		property osgi.modules.includes = "frontend-js-a11y-sample-web,frontend-js-a11y-web";
 		property portal.acceptance = "false";
 
-		// TODO LPS-133020 CanAssertNotAccessible pending implementation
+		task ("Given frontend js a11y sample portlet on a page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Guest",
+				layoutName = "A11y Test Page");
+
+			JSONLayout.addWidgetToPublicLayout(
+				groupName = "Guest",
+				layoutName = "A11y Test Page",
+				widgetName = "JS A11y Sample");
+
+			JSONLayout.updateLayoutTemplateOfPublicLayout(
+				groupName = "Guest",
+				layoutName = "A11y Test Page",
+				layoutTemplate = "1 Column");
+
+			Navigator.gotoPage(pageName = "A11y Test Page");	
+		}
+
+		task ("And Given an accessibility violation is present") {
+			VerifyElementPresent(
+				key_index = "1",
+				locator1 = "A11yTool#HIGHLIGHTED_ELEMENT_INDEX");
+		}
+
+		task ("When checking if accessibility violation is present") {
+			AssertAccessible();
+		}
+
+		task ("Then violation is thrown") {
+		}
 
 	}
 
