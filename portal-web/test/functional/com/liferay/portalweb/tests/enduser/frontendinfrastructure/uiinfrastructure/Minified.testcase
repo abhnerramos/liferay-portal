@@ -47,7 +47,10 @@ definition {
 	@priority = 3
 	test VerifyErroWhenJQueryEnabled {
 		task ("Given Navigate through the menus and select System Settings") {
-			SystemSettings.openSystemSettingsAdmin();
+			ApplicationsMenu.gotoPortlet(
+				category = "Configuration",
+				panel = "Control Panel",
+				portlet = "System Settings");
 		}
 
 		task ("When Activate JQuery and update/submit") {
