@@ -18,13 +18,13 @@ import {useForm} from 'react-hook-form';
 
 import Form from '../../../components/Form';
 import DualListBox, {Boxes} from '../../../components/Form/DualListBox';
+import SearchBuilder from '../../../core/SearchBuilder';
 import {useFetch} from '../../../hooks/useFetch';
 import useFormActions from '../../../hooks/useFormActions';
 import i18n from '../../../i18n';
 import yupSchema, {yupResolver} from '../../../schema/yup';
 import {APIResponse, TestrayFactor} from '../../../services/rest';
 import {testrayFactorRest} from '../../../services/rest/TestrayFactor';
-import {searchUtil} from '../../../util/search';
 import FactorsToOptions from './FactorsToOptions';
 
 type EnvironmentFactorsModalProps = {
@@ -69,7 +69,7 @@ const EnvironmentFactorsModal: React.FC<EnvironmentFactorsModalProps> = ({
 		testrayFactorRest.resource,
 		{
 			params: {
-				filter: searchUtil.eq('routineId', routineId),
+				filter: SearchBuilder.eq('routineId', routineId),
 			},
 			transformData: (response) =>
 				testrayFactorRest.transformDataFromList(response),

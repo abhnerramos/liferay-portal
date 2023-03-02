@@ -15,6 +15,7 @@
 import {useEffect} from 'react';
 import {Outlet, useOutletContext, useParams} from 'react-router-dom';
 
+import SearchBuilder from '../../../core/SearchBuilder';
 import {useFetch} from '../../../hooks/useFetch';
 import useHeader from '../../../hooks/useHeader';
 import i18n from '../../../i18n';
@@ -26,7 +27,6 @@ import {
 	testraySubTaskImpl,
 } from '../../../services/rest';
 import {testraySubtaskIssuesImpl} from '../../../services/rest/TestraySubtaskIssues';
-import {searchUtil} from '../../../util/search';
 
 type OutletContext = {
 	data: {
@@ -61,7 +61,7 @@ const SubtaskOutlet = () => {
 	>(testraySubTaskImpl.resource, {
 		params: {
 			fields: 'name',
-			filter: searchUtil.eq(
+			filter: SearchBuilder.eq(
 				'r_mergedToTestraySubtask_c_subtaskId',
 				subtaskId as string
 			),
@@ -75,7 +75,7 @@ const SubtaskOutlet = () => {
 		testraySubtaskIssuesImpl.resource,
 		{
 			params: {
-				filter: searchUtil.eq('subtaskId', subtaskId as string),
+				filter: SearchBuilder.eq('subtaskId', subtaskId as string),
 			},
 			transformData: (response) =>
 				testraySubtaskIssuesImpl.transformDataFromList(response),
@@ -95,7 +95,7 @@ const SubtaskOutlet = () => {
 		{
 			params: {
 				fields: 'name',
-				filter: searchUtil.eq(
+				filter: SearchBuilder.eq(
 					'r_splitFromTestraySubtask_c_subtaskId',
 					subtaskId as string
 				),

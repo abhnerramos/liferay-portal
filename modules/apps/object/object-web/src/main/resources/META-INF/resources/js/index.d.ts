@@ -12,7 +12,6 @@
  * details.
  */
 
-type Locale = Liferay.Language.Locale;
 type LocalizedValue<T> = Liferay.Language.LocalizedValue<T>;
 
 type NotificationTemplate = {
@@ -21,6 +20,7 @@ type NotificationTemplate = {
 	body: LocalizedValue<string>;
 	cc: string;
 	description: string;
+	externalReferenceCode: string;
 	from: string;
 	fromName: LocalizedValue<string>;
 	id: number;
@@ -49,6 +49,7 @@ interface ObjectAction {
 
 interface ObjectActionParameters {
 	lineCount?: number;
+	notificationTemplateExternalReferenceCode?: string;
 	notificationTemplateId?: number;
 	objectDefinitionExternalReferenceCode?: string;
 	objectDefinitionId?: number;
@@ -88,7 +89,7 @@ interface ObjectField {
 	id: number;
 	indexed: boolean;
 	indexedAsKeyword: boolean;
-	indexedLanguageId: Locale | null;
+	indexedLanguageId: Liferay.Language.Locale | null;
 	label: LocalizedValue<string>;
 	listTypeDefinitionExternalReferenceCode: string;
 	listTypeDefinitionId?: number;
@@ -116,7 +117,7 @@ interface ObjectDefinition {
 	dateCreated: string;
 	dateModified: string;
 	dbTableName?: string;
-	defaultLanguageId: Locale;
+	defaultLanguageId: Liferay.Language.Locale;
 	enableCategorization: boolean;
 	enableComments: boolean;
 	enableObjectEntryHistory: boolean;

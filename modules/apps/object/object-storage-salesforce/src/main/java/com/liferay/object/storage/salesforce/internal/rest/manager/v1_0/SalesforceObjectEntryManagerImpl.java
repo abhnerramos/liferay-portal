@@ -475,14 +475,22 @@ public class SalesforceObjectEntryManagerImpl
 
 				Map<String, String> valueMap = (HashMap<String, String>)value;
 
-				value = valueMap.get("key");
+				ListTypeEntry listTypeEntry =
+					_listTypeEntryLocalService.getListTypeEntry(
+						objectField.getListTypeDefinitionId(),
+						valueMap.get("key"));
+
+				value = listTypeEntry.getExternalReferenceCode();
 			}
 
 			map.put(
 				objectField.getExternalReferenceCode(),
 				Objects.equals(value, StringPool.BLANK) ? null : value);
 
-			if (Objects.equals(
+			if (StringUtil.endsWith(
+					objectDefinition.getExternalReferenceCode(),
+					_CUSTOM_OBJECT_SUFFIX) &&
+				Objects.equals(
 					objectField.getObjectFieldId(),
 					objectDefinition.getTitleObjectFieldId())) {
 
@@ -581,8 +589,10 @@ public class SalesforceObjectEntryManagerImpl
 						ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
 
 				ListTypeEntry listTypeEntry =
-					_listTypeEntryLocalService.fetchListTypeEntry(
-						objectField.getListTypeDefinitionId(), (String)value);
+					_listTypeEntryLocalService.
+						fetchListTypeEntryByExternalReferenceCode(
+							(String)value, objectDefinition.getCompanyId(),
+							objectField.getListTypeDefinitionId());
 
 				if (listTypeEntry == null) {
 					continue;
@@ -605,6 +615,8 @@ public class SalesforceObjectEntryManagerImpl
 
 		return objectEntry;
 	}
+
+	private static final String _CUSTOM_OBJECT_SUFFIX = "__c";
 
 	private final Map<String, String> _defaultObjectFieldNames =
 		HashMapBuilder.put(

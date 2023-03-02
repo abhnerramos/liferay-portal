@@ -37,6 +37,9 @@ const BaseActionsInfo = ({
 	setScript,
 	setScriptLanguage,
 	setSelectedActionType,
+	setStatus,
+	status,
+	statuses,
 	updateActionInfo,
 }) => {
 	useEffect(() => {
@@ -73,6 +76,7 @@ const BaseActionsInfo = ({
 							priority,
 							script,
 							scriptLanguage,
+							status,
 						})
 					}
 					onChange={({target}) => {
@@ -98,6 +102,7 @@ const BaseActionsInfo = ({
 							priority,
 							script,
 							scriptLanguage,
+							status,
 						})
 					}
 					onChange={({target}) => {
@@ -118,7 +123,7 @@ const BaseActionsInfo = ({
 				<ClaySelect
 					aria-label="Select"
 					className={!selectedActionType ? 'select-placeholder' : ''}
-					defaultValue={scriptLanguage}
+					defaultValue={status ? 'update-status' : scriptLanguage}
 					id="type"
 					onChange={({target}) => {
 						setScriptLanguage(target.value);
@@ -137,6 +142,7 @@ const BaseActionsInfo = ({
 							priority,
 							script,
 							scriptLanguage,
+							status,
 						})
 					}
 				>
@@ -190,6 +196,48 @@ const BaseActionsInfo = ({
 				</ClayForm.Group>
 			)}
 
+			{selectedActionType?.type === 'status' && (
+				<ClayForm.Group>
+					<label htmlFor="update-status">Status</label>
+
+					<ClaySelect
+						aria-label="Select"
+						className={!status ? 'select-placeholder' : ''}
+						defaultValue={status}
+						id="update-status"
+						onChange={({target}) => {
+							setStatus(target.value);
+						}}
+						onClickCapture={() =>
+							updateActionInfo({
+								description,
+								executionType,
+								name,
+								priority,
+								scriptLanguage,
+								status,
+							})
+						}
+					>
+						<ClaySelect.Option
+							hidden
+							key={0}
+							label={Liferay.Language.get('choose-an-option')}
+							value="choose-an-option"
+						/>
+
+						{statuses &&
+							statuses.map((item) => (
+								<ClaySelect.Option
+									key={item.value}
+									label={item.label}
+									value={item.value}
+								/>
+							))}
+					</ClaySelect>
+				</ClayForm.Group>
+			)}
+
 			{typeof executionTypeInput !== 'undefined' && (
 				<ClayForm.Group>
 					<label htmlFor="execution-type">
@@ -211,6 +259,7 @@ const BaseActionsInfo = ({
 								priority,
 								script,
 								scriptLanguage,
+								status,
 							})
 						}
 					>
@@ -257,6 +306,7 @@ const BaseActionsInfo = ({
 							priority,
 							script,
 							scriptLanguage,
+							status,
 						});
 					}}
 					onChange={({target}) => {

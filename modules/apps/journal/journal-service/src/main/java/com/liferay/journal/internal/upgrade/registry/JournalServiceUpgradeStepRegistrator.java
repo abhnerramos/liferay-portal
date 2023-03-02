@@ -64,12 +64,16 @@ import com.liferay.journal.internal.upgrade.v4_0_0.JournalArticleDDMFieldsUpgrad
 import com.liferay.journal.internal.upgrade.v4_1_0.JournalArticleExternalReferenceCodeUpgradeProcess;
 import com.liferay.journal.internal.upgrade.v4_3_1.BasicWebContentAssetEntryClassTypeIdUpgradeProcess;
 import com.liferay.journal.internal.upgrade.v4_4_0.GlobalJournalArticleUrlTitleUpgradeProcess;
+import com.liferay.journal.internal.upgrade.v4_4_3.JournalArticleLayoutClassedModelUsageUpgradeProcess;
+import com.liferay.journal.internal.upgrade.v4_4_4.JournalFeedTypeUpgradeProcess;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.util.JournalConverter;
+import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.portal.change.tracking.store.CTStoreFactory;
 import com.liferay.portal.configuration.upgrade.PrefsPropsToConfigurationUpgradeHelper;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
@@ -94,6 +98,7 @@ import com.liferay.portal.kernel.upgrade.CTModelUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
+import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.subscription.service.SubscriptionLocalService;
@@ -259,8 +264,10 @@ public class JournalServiceUpgradeStepRegistrator
 
 			});
 
+		registry.register("3.1.0", "3.1.1", new DummyUpgradeStep());
+
 		registry.register(
-			"3.1.0", "3.2.0",
+			"3.1.1", "3.2.0",
 			new CTModelUpgradeProcess(
 				"JournalArticleLocalization", "JournalArticleResource",
 				"JournalArticle", "JournalFolder"));
@@ -285,8 +292,10 @@ public class JournalServiceUpgradeStepRegistrator
 
 		registry.register("3.4.1", "3.4.2", new DummyUpgradeStep());
 
+		registry.register("3.4.2", "3.4.3", new DummyUpgradeStep());
+
 		registry.register(
-			"3.4.2", "3.5.0",
+			"3.4.3", "3.5.0",
 			new JournalArticleContentUpgradeProcess(
 				_journalContentCompatibilityConverter));
 
@@ -341,6 +350,29 @@ public class JournalServiceUpgradeStepRegistrator
 			"4.4.0", "4.4.1",
 			UpgradeProcessFactory.alterColumnType(
 				"JournalArticleLocalization", "title", "VARCHAR(800) null"));
+
+		registry.register("4.4.1", "4.4.2", new DummyUpgradeStep());
+
+		registry.register(
+			"4.4.2", "4.4.3",
+			new JournalArticleLayoutClassedModelUsageUpgradeProcess(
+				_assetEntryLocalService, _classNameLocalService,
+				_layoutLocalService, _layoutClassedModelUsageLocalService,
+				_portletPreferencesLocalService,
+				_portletPreferenceValueLocalService));
+
+		registry.register(
+			"4.4.3", "4.4.4",
+			new JournalFeedTypeUpgradeProcess(
+				_assetCategoryLocalService,
+				_assetEntryAssetCategoryRelLocalService,
+				_assetEntryLocalService, _assetVocabularyLocalService,
+				_companyLocalService, _language, _localization, _portal,
+				_userLocalService));
+
+		registry.register(
+			"4.4.4", "5.0.0",
+			UpgradeProcessFactory.dropColumns("JournalFeed", "type_"));
 	}
 
 	private void _deleteTempImages() throws Exception {
@@ -427,7 +459,17 @@ public class JournalServiceUpgradeStepRegistrator
 	private JournalConverter _journalConverter;
 
 	@Reference
+	private Language _language;
+
+	@Reference
+	private LayoutClassedModelUsageLocalService
+		_layoutClassedModelUsageLocalService;
+
+	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private Localization _localization;
 
 	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED, unbind = "-")
 	private ModuleServiceLifecycle _moduleServiceLifecycle;

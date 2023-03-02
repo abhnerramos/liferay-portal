@@ -26,7 +26,9 @@ import com.liferay.info.field.InfoField;
 import com.liferay.info.field.type.BooleanInfoFieldType;
 import com.liferay.info.field.type.DateInfoFieldType;
 import com.liferay.info.field.type.FileInfoFieldType;
+import com.liferay.info.field.type.HTMLInfoFieldType;
 import com.liferay.info.field.type.InfoFieldType;
+import com.liferay.info.field.type.MultiselectInfoFieldType;
 import com.liferay.info.field.type.NumberInfoFieldType;
 import com.liferay.info.field.type.RelationshipInfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
@@ -47,6 +49,7 @@ import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -60,6 +63,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -201,7 +205,7 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 
 			FragmentEntry fragmentEntry =
 				_fragmentCollectionContributorRegistry.getFragmentEntry(
-					_getFragmentEntryKey(infoFieldType));
+					_getFragmentEntryKey(infoField));
 
 			if ((fragmentEntry == null) ||
 				!_isAllowedFragmentEntryKey(
@@ -269,7 +273,9 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 		return addedFragmentEntryLinks;
 	}
 
-	private String _getFragmentEntryKey(InfoFieldType infoFieldType) {
+	private String _getFragmentEntryKey(InfoField infoField) {
+		InfoFieldType infoFieldType = infoField.getInfoFieldType();
+
 		if (infoFieldType instanceof BooleanInfoFieldType) {
 			return "INPUTS-checkbox";
 		}
@@ -280,6 +286,14 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 
 		if (infoFieldType instanceof FileInfoFieldType) {
 			return "INPUTS-file-upload";
+		}
+
+		if (infoFieldType instanceof HTMLInfoFieldType) {
+			return "INPUTS-rich-text-input";
+		}
+
+		if (infoFieldType instanceof MultiselectInfoFieldType) {
+			return "INPUTS-multiselect-list";
 		}
 
 		if (infoFieldType instanceof NumberInfoFieldType) {
@@ -293,6 +307,13 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		if (infoFieldType instanceof TextInfoFieldType) {
+			if (FeatureFlagManagerUtil.isEnabled("LPS-161631") &&
+				GetterUtil.getBoolean(
+					infoField.getAttribute(TextInfoFieldType.MULTILINE))) {
+
+				return "INPUTS-textarea";
+			}
+
 			return "INPUTS-text-input";
 		}
 

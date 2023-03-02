@@ -37,6 +37,7 @@ export default function EditListTypeDefinition({
 			await API.updatePickList({
 				externalReferenceCode: values.externalReferenceCode,
 				id: parseInt(listTypeDefinitionId, 10),
+				listTypeEntries: values.listTypeEntries,
 				name_i18n: values.name_i18n,
 			});
 			saveAndReload();
@@ -121,6 +122,8 @@ export default function EditListTypeDefinition({
 							<ListTypeTable
 								pickListId={values.id}
 								readOnly={readOnly}
+								setValues={setValues}
+								values={values}
 							/>
 						)}
 					</Card>

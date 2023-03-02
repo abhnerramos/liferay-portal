@@ -669,6 +669,10 @@
 			<category name="Bug Prevention" />
 			<description name="Checks that hardcoded SQL values in `*FinderImpl` classes match the SQL in the `.xml` file in the `custom-sql` directory." />
 		</check>
+		<check name="JavaGetFeatureFlagCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that `FeatureFlagManagerUtil.isEnabled` should be used (instead of `PropsUtil.get` in `GetterUtil.getBoolean`)." />
+		</check>
 		<check name="JavaHelperUtilCheck">
 			<category name="Naming Conventions" />
 			<description name="Finds incorrect use of `*Helper` or `*Util` classes." />
@@ -1570,6 +1574,10 @@
 		<check name="XMLLog4jFileCheck">
 			<category name="Styling" />
 			<description name="Checks the order of categories in `*-log4j.xml` file." />
+		</check>
+		<check name="XMLLog4jLoggersCheck">
+			<category name="Miscellaneous" />
+			<description name="Checks the loggers defined in `*-log4j.xml` file." />
 		</check>
 		<check name="XMLLookAndFeelCompatibilityVersionCheck">
 			<category name="Bug Prevention" />

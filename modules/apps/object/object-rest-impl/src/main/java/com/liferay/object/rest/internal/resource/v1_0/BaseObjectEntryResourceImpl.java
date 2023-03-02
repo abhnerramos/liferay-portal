@@ -516,7 +516,9 @@ public abstract class BaseObjectEntryResourceImpl
 			ObjectEntry objectEntry)
 		throws Exception {
 
-		ObjectEntry existingObjectEntry = getByExternalReferenceCode(scopeKey);
+		ObjectEntry existingObjectEntry =
+			getScopeScopeKeyByExternalReferenceCode(
+				scopeKey, externalReferenceCode);
 
 		if (objectEntry.getActions() != null) {
 			existingObjectEntry.setActions(objectEntry.getActions());
@@ -545,7 +547,8 @@ public abstract class BaseObjectEntryResourceImpl
 
 		preparePatch(objectEntry, existingObjectEntry);
 
-		return putByExternalReferenceCode(scopeKey, existingObjectEntry);
+		return putScopeScopeKeyByExternalReferenceCode(
+			scopeKey, externalReferenceCode, existingObjectEntry);
 	}
 
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -1584,7 +1587,9 @@ public abstract class BaseObjectEntryResourceImpl
 						permission = _toPermission(
 							resourceActions, resourcePermission, role);
 
-						permissions.put(role.getName(), permission);
+						if (permission != null) {
+							permissions.put(role.getName(), permission);
+						}
 					}
 					else {
 						Set<String> actionsIdsSet = new HashSet<>();
@@ -1623,6 +1628,10 @@ public abstract class BaseObjectEntryResourceImpl
 			if ((actionIds & bitwiseValue) == bitwiseValue) {
 				actionsIdsSet.add(resourceAction.getActionId());
 			}
+		}
+
+		if (actionsIdsSet.isEmpty()) {
+			return null;
 		}
 
 		return new Permission() {

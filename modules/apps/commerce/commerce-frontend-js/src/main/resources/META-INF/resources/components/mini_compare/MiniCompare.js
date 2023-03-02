@@ -18,7 +18,7 @@ import {checkCookieConsentForTypes} from '@liferay/cookies-banner-web';
 import classnames from 'classnames';
 import {COOKIE_TYPES, checkConsent} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import CommerceCookie from '../../utilities/cookies';
 import {
@@ -91,15 +91,19 @@ function MiniCompare(props) {
 		checkConsent(COOKIE_TYPES.FUNCTIONAL)
 	);
 
-	const triggerCheckCookieConsent = () => {
+	const triggerCheckCookieConsent = useCallback(() => {
 		return !functionalCookiesConsent && items?.length > 0;
-	};
+	}, [functionalCookiesConsent, items?.length]);
 
 	useEffect(() => {
 		if (triggerCheckCookieConsent()) {
 			checkCookieConsentForTypes(COOKIE_TYPES.FUNCTIONAL, {
-				alertMessage: Liferay.Language.get('product-comparison-cookies-alert'),
-				customTitle: Liferay.Language.get('product-comparison-cookies-title'),
+				alertMessage: Liferay.Language.get(
+					'product-comparison-cookies-alert'
+				),
+				customTitle: Liferay.Language.get(
+					'product-comparison-cookies-title'
+				),
 			})
 				.then(() => {
 					compareCookie.setValue(
@@ -110,18 +114,27 @@ function MiniCompare(props) {
 					alertCookies(
 						'success',
 						Liferay.Language.get('cookies-allowed'),
-						Liferay.Language.get('product-comparison-cookies-success')
+						Liferay.Language.get(
+							'product-comparison-cookies-success'
+						)
 					);
 				})
 				.catch(() => {
 					alertCookies(
 						'warning',
 						Liferay.Language.get('cookies-not-allowed'),
-						Liferay.Language.get('product-comparison-cookies-warning')
+						Liferay.Language.get(
+							'product-comparison-cookies-warning'
+						)
 					);
 				});
 		}
-	}, [functionalCookiesConsent, items, props.commerceChannelGroupId]);
+	}, [
+		functionalCookiesConsent,
+		items,
+		props.commerceChannelGroupId,
+		triggerCheckCookieConsent,
+	]);
 
 	useEffect(() => {
 		function toggleItem({id, thumbnail}) {

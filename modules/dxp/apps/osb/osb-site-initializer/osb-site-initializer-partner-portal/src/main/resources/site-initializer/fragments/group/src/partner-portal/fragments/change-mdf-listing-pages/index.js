@@ -18,6 +18,24 @@ const siteURL = Liferay.ThemeDisplay.getLayoutRelativeURL()
 const buttonMDFRequest = fragmentElement.querySelector('#mdf-request');
 const buttonMDFClaim = fragmentElement.querySelector('#mdf-claim');
 
+const queryParams = new URLSearchParams(window.location.search);
+const hasNewSuccess = Boolean(queryParams.get('new-success'));
+const hasEditSuccess = Boolean(queryParams.get('edit-success'));
+
+if (hasNewSuccess) {
+	Liferay.Util.openToast({
+		message: 'Your MDF Request was successfully submited.',
+		type: 'success',
+	});
+}
+
+if (hasEditSuccess) {
+	Liferay.Util.openToast({
+		message: 'Your MDF Request was successfully edited.',
+		type: 'success',
+	});
+}
+
 if (buttonMDFRequest) {
 	buttonMDFRequest.onclick = () =>
 		Liferay.Util.navigate(`${siteURL}/marketing/mdf-requests`);

@@ -13,8 +13,12 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
+import ClayEmptyState from '@clayui/empty-state';
 import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
+import ClayLink from '@clayui/link';
+import ClayList from '@clayui/list';
+import {sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 const ITEM_TYPES_SYMBOL = {
@@ -23,6 +27,59 @@ const ITEM_TYPES_SYMBOL = {
 };
 
 const SEARCH_DELTA = 2;
+
+const highlithKeywordInText = (text, keyword) => {
+	const parts = text.split(new RegExp(`(${keyword})`, 'gi'));
+
+	return (
+		<span>
+			{parts.map((part) =>
+				part.toLowerCase() === keyword.toLowerCase() ? (
+					<b>{part}</b>
+				) : (
+					part
+				)
+			)}
+		</span>
+	);
+};
+
+const SearchResult = ({filteredItems, keyword}) => {
+	return filteredItems.length ? (
+		<ClayList role="list">
+			{filteredItems.map((item) => {
+				return (
+					<ClayList.ItemField expand key={item.id}>
+						<ClayLink
+							className="p-1"
+							displayType="secondary"
+							href={item.href}
+						>
+							<ClayIcon
+								className="mr-2"
+								symbol={ITEM_TYPES_SYMBOL[item.type]}
+							/>
+
+							{highlithKeywordInText(item.name, keyword)}
+						</ClayLink>
+					</ClayList.ItemField>
+				);
+			})}
+		</ClayList>
+	) : (
+		<ClayEmptyState
+			description={sub(
+				Liferay.Language.get(
+					'no-content-was-found-that-matched-keyword-x'
+				),
+				[keyword]
+			)}
+			imgSrc={`${themeDisplay.getPathThemeImages()}/states/search_state.gif`}
+			small
+			title={Liferay.Language.get('no-results-found')}
+		/>
+	);
+};
 
 export default function SearchField({handleSearchChange, items}) {
 	const initialSearchInfo = {
@@ -94,21 +151,11 @@ export default function SearchField({handleSearchChange, items}) {
 
 			<hr className="separator" />
 
-			{searchActive && searchInfo.filteredItems && (
-				<ul className="list-group">
-					{searchInfo.filteredItems.map((item) => {
-						return (
-							<li className="list-group-item" key={item.id}>
-								<ClayIcon
-									className="mr-2"
-									symbol={ITEM_TYPES_SYMBOL[item.type]}
-								/>
-
-								{item.name}
-							</li>
-						);
-					})}
-				</ul>
+			{searchActive && (
+				<SearchResult
+					filteredItems={searchInfo.filteredItems}
+					keyword={searchInfo.query}
+				/>
 			)}
 		</>
 	);

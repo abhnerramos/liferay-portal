@@ -17,7 +17,10 @@ package com.liferay.object.web.internal.deployer;
 import com.liferay.application.list.PanelApp;
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
 import com.liferay.info.item.creator.InfoItemCreator;
@@ -150,8 +153,9 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 			_bundleContext.registerService(
 				AssetRendererFactory.class,
 				new ObjectEntryAssetRendererFactory(
-					objectDefinition, _objectEntryDisplayContextFactory,
-					_objectEntryService, _servletContext),
+					_assetDisplayPageFriendlyURLProvider, objectDefinition,
+					_objectEntryDisplayContextFactory, _objectEntryService,
+					_servletContext),
 				HashMapDictionaryBuilder.<String, Object>put(
 					"company.id", objectDefinition.getCompanyId()
 				).put(
@@ -199,8 +203,8 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 			_bundleContext.registerService(
 				InfoItemFieldValuesProvider.class,
 				new ObjectEntryInfoItemFieldValuesProvider(
-					_assetDisplayPageFriendlyURLProvider,
-					_dlFileEntryLocalService,
+					_assetDisplayPageFriendlyURLProvider, _dlAppLocalService,
+					_dlFileEntryLocalService, _dlURLHelper,
 					_infoItemFieldReaderFieldSetProvider, _jsonFactory,
 					_listTypeEntryLocalService, objectDefinition,
 					_objectEntryLocalService, _objectEntryManagerRegistry,
@@ -245,11 +249,11 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 			_bundleContext.registerService(
 				InfoItemRenderer.class,
 				new ObjectEntryRowInfoItemRenderer(
-					_assetDisplayPageFriendlyURLProvider,
-					_dlFileEntryLocalService, _listTypeEntryLocalService,
-					_objectDefinitionLocalService, _objectEntryLocalService,
-					_objectFieldLocalService, _objectRelationshipLocalService,
-					_servletContext),
+					_assetDisplayPageFriendlyURLProvider, _dlAppService,
+					_dlFileEntryLocalService, _dlURLHelper,
+					_listTypeEntryLocalService, _objectDefinitionLocalService,
+					_objectEntryLocalService, _objectFieldLocalService,
+					_objectRelationshipLocalService, _portal, _servletContext),
 				HashMapDictionaryBuilder.<String, Object>put(
 					Constants.SERVICE_RANKING, 100
 				).put(
@@ -283,8 +287,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					_objectEntryLocalService,
 					_objectEntryManagerRegistry.getObjectEntryManager(
 						objectDefinition.getStorageType()),
-					_objectRelatedModelsProviderRegistry,
-					_objectScopeProviderRegistry, _portal),
+					_objectRelatedModelsProviderRegistry, _portal),
 				HashMapDictionaryBuilder.<String, Object>put(
 					"item.selector.view.order", 500
 				).build()),
@@ -448,7 +451,16 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	private DisplayPageInfoItemCapability _displayPageInfoItemCapability;
 
 	@Reference
+	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private DLAppService _dlAppService;
+
+	@Reference
 	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Reference
+	private DLURLHelper _dlURLHelper;
 
 	@Reference
 	private EditPageInfoItemCapability _editPageInfoItemCapability;

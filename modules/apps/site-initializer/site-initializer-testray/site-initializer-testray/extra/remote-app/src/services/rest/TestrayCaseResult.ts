@@ -12,13 +12,13 @@
  * details.
  */
 
+import Rest from '../../core/Rest';
+import SearchBuilder from '../../core/SearchBuilder';
 import yupSchema from '../../schema/yup';
 import {waitTimeout} from '../../util';
-import {searchUtil} from '../../util/search';
 import {CaseResultStatuses} from '../../util/statuses';
 import {Liferay} from '../liferay';
 import {liferayMessageBoardImpl} from './LiferayMessageBoard';
-import Rest from './Rest';
 import {testrayCaseResultsIssuesImpl} from './TestrayCaseresultsIssues';
 import {testrayIssueImpl} from './TestrayIssues';
 import {TestrayCaseResult} from './types';
@@ -54,7 +54,7 @@ class TestrayCaseResultRest extends Rest<CaseResultForm, TestrayCaseResult> {
 				startDate,
 			}),
 			nestedFields:
-				'case,component.team,build.productVersion,build.routine,run,user',
+				'case.caseType,component.team.name,team,build.productVersion,build.routine,run,user,caseResultToCaseResultsIssues',
 			transformData: (caseResult) => ({
 				...caseResult,
 				build: caseResult?.r_buildToCaseResult_c_build
@@ -74,31 +74,38 @@ class TestrayCaseResultRest extends Rest<CaseResultForm, TestrayCaseResult> {
 							caseType:
 								caseResult?.r_caseToCaseResult_c_case
 									?.r_caseTypeToCases_c_caseType,
-							component:
-								caseResult?.r_caseToCaseResult_c_case
-									?.r_componentToCases_c_component,
+							component: caseResult?.r_caseToCaseResult_c_case
+								?.r_componentToCases_c_component
+								? {
+										...caseResult?.r_caseToCaseResult_c_case
+											?.r_componentToCases_c_component,
+										team:
+											caseResult
+												?.r_caseToCaseResult_c_case
+												.r_componentToCases_c_component
+												.r_teamToComponents_c_team,
+								  }
+								: undefined,
 					  }
 					: undefined,
 				component: caseResult?.r_componentToCaseResult_c_component
 					? {
 							...caseResult.r_componentToCaseResult_c_component,
-							team:
-								caseResult.r_componentToCaseResult_c_component
-									.r_teamToComponents_c_team,
+							team: caseResult.r_componentToCaseResult_c_component
+								.r_teamToComponents_c_team
+								? caseResult.r_componentToCaseResult_c_component
+										.r_teamToComponents_c_team
+								: undefined,
 					  }
 					: undefined,
+				issues: caseResult.caseResultToCaseResultsIssues ?? [],
 				run: caseResult?.r_runToCaseResult_c_run
 					? {
 							...caseResult?.r_runToCaseResult_c_run,
 							build: caseResult?.r_runToCaseResult_c_run?.build,
 					  }
 					: undefined,
-				user: caseResult?.r_userToCaseResults_user
-					? {
-							...caseResult?.r_userToCaseResults_user,
-							id: caseResult?.r_userToCaseResults_user?.uuid,
-					  }
-					: undefined,
+				user: caseResult?.r_userToCaseResults_user,
 			}),
 			uri: 'caseresults',
 		});
@@ -135,16 +142,18 @@ class TestrayCaseResultRest extends Rest<CaseResultForm, TestrayCaseResult> {
 
 	public async assignCaseResultIssue(caseResultId: number, issues: string[]) {
 		const caseResultIssuesResponse = await testrayCaseResultsIssuesImpl.getAll(
-			{filter: searchUtil.eq('caseResultId', caseResultId)}
+			{filter: SearchBuilder.eq('caseResultId', caseResultId)}
 		);
 
 		for (const issue of issues) {
-			const testrayIssue = await testrayIssueImpl.createIfNotExist(issue);
+			const testrayIssue = await testrayIssueImpl.createIfNotExist({
+				name: issue,
+			});
 
 			await testrayCaseResultsIssuesImpl.createIfNotExist({
 				caseResultId,
 				issueId: testrayIssue?.id,
-				name: `${issue}-${caseResultId}`,
+				name: `${issue}${testrayIssueImpl.DELIMITER}${caseResultId}`,
 			});
 		}
 

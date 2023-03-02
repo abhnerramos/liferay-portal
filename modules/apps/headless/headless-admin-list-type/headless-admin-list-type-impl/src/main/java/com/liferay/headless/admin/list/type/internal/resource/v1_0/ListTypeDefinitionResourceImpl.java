@@ -136,7 +136,11 @@ public class ListTypeDefinitionResourceImpl
 			_listTypeDefinitionService.addListTypeDefinition(
 				listTypeDefinition.getExternalReferenceCode(),
 				LocalizedMapUtil.getLocalizedMap(
-					listTypeDefinition.getName_i18n())));
+					listTypeDefinition.getName_i18n()),
+				transformToList(
+					listTypeDefinition.getListTypeEntries(),
+					listTypeEntry -> ListTypeEntryUtil.toListTypeEntry(
+						listTypeEntry, _listTypeEntryLocalService))));
 	}
 
 	@Override
@@ -149,7 +153,11 @@ public class ListTypeDefinitionResourceImpl
 				listTypeDefinition.getExternalReferenceCode(),
 				listTypeDefinitionId,
 				LocalizedMapUtil.getLocalizedMap(
-					listTypeDefinition.getName_i18n())));
+					listTypeDefinition.getName_i18n()),
+				transformToList(
+					listTypeDefinition.getListTypeEntries(),
+					listTypeEntry -> ListTypeEntryUtil.toListTypeEntry(
+						listTypeEntry, _listTypeEntryLocalService))));
 	}
 
 	@Override
@@ -157,15 +165,21 @@ public class ListTypeDefinitionResourceImpl
 			String externalReferenceCode, ListTypeDefinition listTypeDefinition)
 		throws Exception {
 
+		listTypeDefinition.setExternalReferenceCode(externalReferenceCode);
+
 		com.liferay.list.type.model.ListTypeDefinition
 			serviceBuilderListTypeDefinition =
 				_listTypeDefinitionService.
-					getListTypeDefinitionByExternalReferenceCode(
+					fetchListTypeDefinitionByExternalReferenceCode(
 						externalReferenceCode, contextCompany.getCompanyId());
 
-		return putListTypeDefinition(
-			serviceBuilderListTypeDefinition.getListTypeDefinitionId(),
-			listTypeDefinition);
+		if (serviceBuilderListTypeDefinition != null) {
+			return putListTypeDefinition(
+				serviceBuilderListTypeDefinition.getListTypeDefinitionId(),
+				listTypeDefinition);
+		}
+
+		return postListTypeDefinition(listTypeDefinition);
 	}
 
 	private Locale _getLocale() {

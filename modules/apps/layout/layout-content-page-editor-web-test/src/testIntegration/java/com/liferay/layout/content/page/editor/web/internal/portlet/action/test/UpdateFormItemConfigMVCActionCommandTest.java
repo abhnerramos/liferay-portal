@@ -45,6 +45,7 @@ import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -260,7 +261,7 @@ public class UpdateFormItemConfigMVCActionCommandTest {
 	}
 
 	@Test
-	public void testUpdateFormItemConfigMVCActionCommandMappingFormFFEnabled()
+	public void testUpdateFormItemConfigMVCActionCommandMappingForm()
 		throws Exception {
 
 		try (ComponentEnablerTemporarySwapper componentEnablerTemporarySwapper =
@@ -567,8 +568,7 @@ public class UpdateFormItemConfigMVCActionCommandTest {
 							childrenItemIds.get(i));
 
 			_assertFragmentEntry(
-				infoField.getUniqueId(),
-				_getExpectedRendererKey(infoField.getInfoFieldType()),
+				infoField.getUniqueId(), _getExpectedRendererKey(infoField),
 				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId(),
 				assertRendererKey);
 		}
@@ -645,7 +645,9 @@ public class UpdateFormItemConfigMVCActionCommandTest {
 			expectedErrorMessage, jsonObject.getString("errorMessage"));
 	}
 
-	private String _getExpectedRendererKey(InfoFieldType infoFieldType) {
+	private String _getExpectedRendererKey(InfoField infoField) {
+		InfoFieldType infoFieldType = infoField.getInfoFieldType();
+
 		if (infoFieldType instanceof BooleanInfoFieldType) {
 			return "INPUTS-checkbox";
 		}
@@ -669,6 +671,13 @@ public class UpdateFormItemConfigMVCActionCommandTest {
 		}
 
 		if (infoFieldType instanceof TextInfoFieldType) {
+			if (FeatureFlagManagerUtil.isEnabled("LPS-161631") &&
+				GetterUtil.getBoolean(
+					infoField.getAttribute(TextInfoFieldType.MULTILINE))) {
+
+				return "INPUTS-textarea";
+			}
+
 			return "INPUTS-text-input";
 		}
 

@@ -17,10 +17,14 @@ package com.liferay.object.web.internal.info.item.provider;
 import com.liferay.info.exception.NoSuchFormVariationException;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldSet;
+import com.liferay.info.field.InfoFieldSetEntry;
 import com.liferay.info.field.type.FileInfoFieldType;
+import com.liferay.info.field.type.MultiselectInfoFieldType;
 import com.liferay.info.field.type.NumberInfoFieldType;
 import com.liferay.info.field.type.RelationshipInfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
+import com.liferay.info.field.type.TextInfoFieldType;
+import com.liferay.info.field.type.URLInfoFieldType;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.field.reader.InfoItemFieldReaderFieldSetProvider;
 import com.liferay.info.item.provider.InfoItemFormProvider;
@@ -47,9 +51,11 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.web.internal.configuration.util.ObjectConfigurationUtil;
 import com.liferay.object.web.internal.info.item.ObjectEntryInfoItemFields;
 import com.liferay.object.web.internal.util.ObjectFieldDBTypeUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -64,6 +70,7 @@ import com.liferay.template.info.item.provider.TemplateInfoItemFieldSetProvider;
 import java.math.BigDecimal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -204,10 +211,34 @@ public class ObjectEntryInfoItemFormProvider
 		}
 		else if (Objects.equals(
 					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST) ||
-				 Objects.equals(
-					 objectField.getBusinessType(),
-					 ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
+					ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT)) {
+
+			finalStep.attribute(
+				TextInfoFieldType.MAX_LENGTH, _getMaxLength(objectField, 65000)
+			).attribute(
+				TextInfoFieldType.MULTILINE, true
+			);
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST)) {
+
+			finalStep.attribute(
+				MultiselectInfoFieldType.OPTIONS,
+				TransformUtil.transform(
+					_listTypeEntryLocalService.getListTypeEntries(
+						objectField.getListTypeDefinitionId()),
+					listTypeEntry -> new MultiselectInfoFieldType.Option(
+						Objects.equals(
+							objectField.getDefaultValue(),
+							listTypeEntry.getKey()),
+						new FunctionInfoLocalizedValue<>(
+							listTypeEntry::getName),
+						listTypeEntry.getKey())));
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
 
 			finalStep.attribute(
 				SelectInfoFieldType.MULTIPLE,
@@ -250,6 +281,13 @@ public class ObjectEntryInfoItemFormProvider
 				RelationshipInfoFieldType.VALUE_FIELD_NAME, "id"
 			);
 		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT)) {
+
+			finalStep.attribute(
+				TextInfoFieldType.MAX_LENGTH, _getMaxLength(objectField, 280));
+		}
 
 		return finalStep.build();
 	}
@@ -264,6 +302,90 @@ public class ObjectEntryInfoItemFormProvider
 		}
 
 		return acceptedFileExtensionsObjectFieldSetting.getValue();
+	}
+
+	private List<InfoFieldSetEntry>
+		_getAttachmentObjectDefinitionInfoFieldSetEntries(
+			long objectDefinitionId) {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-176083")) {
+			return Collections.emptyList();
+		}
+
+		List<InfoFieldSetEntry> infoFieldSetEntries = new ArrayList<>();
+
+		for (ObjectField objectField :
+				_objectFieldLocalService.getObjectFields(
+					objectDefinitionId, false)) {
+
+			if (!Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+
+				continue;
+			}
+
+			infoFieldSetEntries.add(
+				InfoFieldSet.builder(
+				).infoFieldSetEntry(
+					InfoField.builder(
+					).infoFieldType(
+						URLInfoFieldType.INSTANCE
+					).namespace(
+						ObjectField.class.getSimpleName()
+					).name(
+						objectField.getObjectFieldId() + "#downloadURL"
+					).labelInfoLocalizedValue(
+						InfoLocalizedValue.localize(
+							ObjectEntryInfoItemFields.class, "download-url")
+					).build()
+				).infoFieldSetEntry(
+					InfoField.builder(
+					).infoFieldType(
+						TextInfoFieldType.INSTANCE
+					).namespace(
+						ObjectField.class.getSimpleName()
+					).name(
+						objectField.getObjectFieldId() + "#fileName"
+					).labelInfoLocalizedValue(
+						InfoLocalizedValue.localize(
+							ObjectEntryInfoItemFields.class, "file-name")
+					).build()
+				).infoFieldSetEntry(
+					InfoField.builder(
+					).infoFieldType(
+						TextInfoFieldType.INSTANCE
+					).namespace(
+						ObjectField.class.getSimpleName()
+					).name(
+						objectField.getObjectFieldId() + "#mimeType"
+					).labelInfoLocalizedValue(
+						InfoLocalizedValue.localize(
+							ObjectEntryInfoItemFields.class, "mime-type")
+					).build()
+				).infoFieldSetEntry(
+					InfoField.builder(
+					).infoFieldType(
+						TextInfoFieldType.INSTANCE
+					).namespace(
+						ObjectField.class.getSimpleName()
+					).name(
+						objectField.getObjectFieldId() + "#size"
+					).labelInfoLocalizedValue(
+						InfoLocalizedValue.localize(
+							ObjectEntryInfoItemFields.class, "size")
+					).build()
+				).labelInfoLocalizedValue(
+					InfoLocalizedValue.<String>builder(
+					).values(
+						objectField.getLabelMap()
+					).build()
+				).name(
+					objectField.getName()
+				).build());
+		}
+
+		return infoFieldSetEntries;
 	}
 
 	private InfoFieldSet _getBasicInformationInfoFieldSet() {
@@ -363,6 +485,9 @@ public class ObjectEntryInfoItemFormProvider
 						_getObjectDefinitionInfoFieldSet(objectDefinitionId));
 				}
 			}
+		).infoFieldSetEntries(
+			_getAttachmentObjectDefinitionInfoFieldSetEntries(
+				objectDefinitionId)
 		).infoFieldSetEntry(
 			_templateInfoItemFieldSetProvider.getInfoFieldSet(modelClassName)
 		).infoFieldSetEntry(
@@ -403,6 +528,19 @@ public class ObjectEntryInfoItemFormProvider
 		return maximumFileSize;
 	}
 
+	private long _getMaxLength(ObjectField objectField, long defaultMaxLength) {
+		ObjectFieldSetting objectFieldSetting =
+			_objectFieldSettingLocalService.fetchObjectFieldSetting(
+				objectField.getObjectFieldId(), "maxLength");
+
+		if (objectFieldSetting == null) {
+			return defaultMaxLength;
+		}
+
+		return GetterUtil.getLong(
+			objectFieldSetting.getValue(), defaultMaxLength);
+	}
+
 	private InfoFieldSet _getObjectDefinitionInfoFieldSet(
 			long objectDefinitionId)
 		throws NoSuchFormVariationException {
@@ -422,11 +560,7 @@ public class ObjectEntryInfoItemFormProvider
 			unsafeConsumer -> {
 				for (ObjectField objectField :
 						_objectFieldLocalService.getObjectFields(
-							objectDefinitionId)) {
-
-					if (objectField.isSystem()) {
-						continue;
-					}
+							objectDefinitionId, false)) {
 
 					if (Validator.isNotNull(
 							objectField.getRelationshipType())) {

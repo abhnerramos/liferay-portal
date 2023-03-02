@@ -226,7 +226,16 @@ public abstract class BaseCommerceChannelResourceTestCase {
 			commerceChannel1, (List<CommerceChannel>)page.getItems());
 		assertContains(
 			commerceChannel2, (List<CommerceChannel>)page.getItems());
-		assertValid(page);
+		assertValid(page, testGetCommerceChannelsPage_getExpectedActions());
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetCommerceChannelsPage_getExpectedActions()
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
 	}
 
 	@Test
@@ -597,6 +606,13 @@ public abstract class BaseCommerceChannelResourceTestCase {
 	}
 
 	protected void assertValid(Page<CommerceChannel> page) {
+		assertValid(page, Collections.emptyMap());
+	}
+
+	protected void assertValid(
+		Page<CommerceChannel> page,
+		Map<String, Map<String, String>> expectedActions) {
+
 		boolean valid = false;
 
 		java.util.Collection<CommerceChannel> commerceChannels =
@@ -612,6 +628,20 @@ public abstract class BaseCommerceChannelResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+
+		Map<String, Map<String, String>> actions = page.getActions();
+
+		for (String key : expectedActions.keySet()) {
+			Map action = actions.get(key);
+
+			Assert.assertNotNull(key + " does not contain an action", action);
+
+			Map expectedAction = expectedActions.get(key);
+
+			Assert.assertEquals(
+				expectedAction.get("method"), action.get("method"));
+			Assert.assertEquals(expectedAction.get("href"), action.get("href"));
+		}
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -785,6 +815,10 @@ public abstract class BaseCommerceChannelResourceTestCase {
 
 		EntityModel entityModel = entityModelResource.getEntityModel(
 			new MultivaluedHashMap());
+
+		if (entityModel == null) {
+			return Collections.emptyList();
+		}
 
 		Map<String, EntityField> entityFieldsMap =
 			entityModel.getEntityFieldsMap();

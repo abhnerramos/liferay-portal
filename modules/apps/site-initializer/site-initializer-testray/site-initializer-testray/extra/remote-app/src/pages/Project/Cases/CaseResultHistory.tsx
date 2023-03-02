@@ -15,12 +15,17 @@
 import {useParams} from 'react-router-dom';
 
 import Code from '../../../components/Code';
+import JiraLink from '../../../components/JiraLink';
 import ListView, {ListViewProps} from '../../../components/ListView';
 import StatusBadge from '../../../components/StatusBadge';
 import {StatusBadgeType} from '../../../components/StatusBadge/StatusBadge';
 import {TableProps} from '../../../components/Table';
 import i18n from '../../../i18n';
-import {PickList, testrayCaseResultImpl} from '../../../services/rest';
+import {
+	PickList,
+	TestrayCaseResultIssue,
+	testrayCaseResultImpl,
+} from '../../../services/rest';
 import dayjs from '../../../util/date';
 
 type CaseResultHistoryProps = {
@@ -37,6 +42,7 @@ const CaseResultHistory: React.FC<CaseResultHistoryProps> = ({
 	return (
 		<ListView
 			managementToolbarProps={{
+				filterSchema: 'buildResultsHistory',
 				title: i18n.translate('test-history'),
 				visible: true,
 			}}
@@ -70,6 +76,7 @@ const CaseResultHistory: React.FC<CaseResultHistoryProps> = ({
 						key: 'run',
 						render: (run) => run?.externalReferencePK,
 						value: i18n.translate('environment'),
+						width: '250',
 					},
 					{
 						clickable: true,
@@ -92,7 +99,16 @@ const CaseResultHistory: React.FC<CaseResultHistoryProps> = ({
 						key: 'warnings',
 						value: i18n.translate('warnings'),
 					},
-					{key: 'issues', value: i18n.translate('issues')},
+					{
+						key: 'issues',
+						render: (issues: TestrayCaseResultIssue[]) => (
+							<JiraLink
+								displayViewInJira={false}
+								issue={issues}
+							/>
+						),
+						value: i18n.translate('issues'),
+					},
 					{
 						key: 'errors',
 						render: (errors: string) =>
@@ -101,13 +117,8 @@ const CaseResultHistory: React.FC<CaseResultHistoryProps> = ({
 						value: i18n.translate('errors'),
 					},
 				],
-				highlight: (items) => {
-					if (items.id === Number(caseResultId)) {
-						return true;
-					}
-
-					return false;
-				},
+				highlight: (caseResult) =>
+					caseResult.id === Number(caseResultId),
 				responsive: true,
 				rowWrap: true,
 				...tableProps,

@@ -9,6 +9,10 @@ $toolbarZIndex: 971;
 
 .knowledge-base-portlet-admin {
 	.kb-article {
+		.container-form-lg {
+			padding-top: 1rem;
+		}
+
 		.container-view {
 			padding-bottom: 0;
 			padding-top: 1.5rem;
@@ -79,11 +83,6 @@ $toolbarZIndex: 971;
 				font-size: 1rem;
 			}
 
-			.c-empty-state-title {
-				color: $gray-600;
-				font-weight: normal;
-			}
-
 			.treeview-item a:hover {
 				text-decoration: none;
 			}
@@ -101,7 +100,7 @@ $toolbarZIndex: 971;
 	.knowledge-base-admin-content {
 		margin-left: 40px;
 
-		transition: margin-left 0.5s ease;
+		transition: margin-left 0.25s ease-in-out;
 	}
 
 	.knowledge-base-vertical-bar.expanded + .knowledge-base-admin-content {

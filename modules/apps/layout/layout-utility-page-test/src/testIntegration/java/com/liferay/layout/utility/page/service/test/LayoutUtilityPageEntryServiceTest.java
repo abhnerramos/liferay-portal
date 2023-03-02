@@ -15,20 +15,29 @@
 package com.liferay.layout.utility.page.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.fragment.model.FragmentCollection;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.utility.page.constants.LayoutUtilityPageActionKeys;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryService;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -38,7 +47,10 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
@@ -74,14 +86,106 @@ public class LayoutUtilityPageEntryServiceTest {
 
 		_user = UserTestUtil.addGroupUser(_group, _role.getName());
 
-		ServiceContextThreadLocal.pushServiceContext(
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), _user.getUserId()));
+		_serviceContext = ServiceContextTestUtil.getServiceContext(
+			_group.getGroupId(), _user.getUserId());
+
+		ServiceContextThreadLocal.pushServiceContext(_serviceContext);
 	}
 
 	@After
 	public void tearDown() {
 		ServiceContextThreadLocal.popServiceContext();
+	}
+
+	@Test
+	public void testCopyLayoutUtilityPageEntry() throws Exception {
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(), 0, 0, true,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(), 0,
+				_serviceContext);
+
+		LayoutUtilityPageEntry copiedLayoutUtilityPageEntry =
+			_layoutUtilityPageEntryService.copyLayoutUtilityPageEntry(
+				_group.getGroupId(),
+				layoutUtilityPageEntry.getLayoutUtilityPageEntryId(),
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Assert.assertNotEquals(
+			layoutUtilityPageEntry.getExternalReferenceCode(),
+			copiedLayoutUtilityPageEntry.getExternalReferenceCode());
+		Assert.assertEquals(
+			layoutUtilityPageEntry.getGroupId(),
+			copiedLayoutUtilityPageEntry.getGroupId());
+		Assert.assertEquals(
+			layoutUtilityPageEntry.getCompanyId(),
+			copiedLayoutUtilityPageEntry.getCompanyId());
+		Assert.assertNotEquals(
+			layoutUtilityPageEntry.getPlid(),
+			copiedLayoutUtilityPageEntry.getPlid());
+		Assert.assertEquals(
+			0, copiedLayoutUtilityPageEntry.getPreviewFileEntryId());
+		Assert.assertTrue(
+			StringUtil.startsWith(
+				copiedLayoutUtilityPageEntry.getName(),
+				StringBundler.concat(
+					layoutUtilityPageEntry.getName(), " (",
+					_language.get(LocaleUtil.getDefault(), "copy"), ")")));
+		Assert.assertEquals(
+			layoutUtilityPageEntry.getType(),
+			copiedLayoutUtilityPageEntry.getType());
+	}
+
+	@Test
+	public void testCopyLayoutUtilityPageEntryWithPreviewFileEntry()
+		throws Exception {
+
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(), 0, 0, true,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(), 0,
+				_serviceContext);
+
+		Repository repository = _portletFileRepository.addPortletRepository(
+			_group.getGroupId(), LayoutAdminPortletKeys.GROUP_PAGES,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		FileEntry fileEntry = _portletFileRepository.addPortletFileEntry(
+			_group.getGroupId(), TestPropsValues.getUserId(),
+			FragmentCollection.class.getName(),
+			layoutUtilityPageEntry.getLayoutUtilityPageEntryId(),
+			LayoutAdminPortletKeys.GROUP_PAGES, repository.getDlFolderId(),
+			new byte[0], "test.png", ContentTypes.IMAGE_PNG, false);
+
+		layoutUtilityPageEntry =
+			_layoutUtilityPageEntryService.updateLayoutUtilityPageEntry(
+				layoutUtilityPageEntry.getLayoutUtilityPageEntryId(),
+				fileEntry.getFileEntryId());
+
+		LayoutUtilityPageEntry copiedLayoutUtilityPageEntry =
+			_layoutUtilityPageEntryService.copyLayoutUtilityPageEntry(
+				_group.getGroupId(),
+				layoutUtilityPageEntry.getLayoutUtilityPageEntryId(),
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Assert.assertNotEquals(
+			layoutUtilityPageEntry.getPreviewFileEntryId(),
+			copiedLayoutUtilityPageEntry.getPreviewFileEntryId());
+
+		FileEntry copiedFileEntry = _portletFileRepository.getPortletFileEntry(
+			copiedLayoutUtilityPageEntry.getPreviewFileEntryId());
+
+		Assert.assertEquals(
+			copiedLayoutUtilityPageEntry.getLayoutUtilityPageEntryId() +
+				"_preview.png",
+			copiedFileEntry.getFileName());
+		Assert.assertEquals(
+			fileEntry.getExtension(), copiedFileEntry.getExtension());
+
+		FileVersion copiedFileVersion = copiedFileEntry.getFileVersion();
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, copiedFileVersion.getStatus());
 	}
 
 	@Test(expected = PrincipalException.MustHavePermission.class)
@@ -91,8 +195,8 @@ public class LayoutUtilityPageEntryServiceTest {
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
 				RandomTestUtil.randomString(), _group.getGroupId(), 0, 0, true,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				0);
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(), 0,
+				_serviceContext);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
@@ -109,8 +213,8 @@ public class LayoutUtilityPageEntryServiceTest {
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
 				RandomTestUtil.randomString(), _group.getGroupId(), 0, 0, true,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				0);
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(), 0,
+				_serviceContext);
 
 		_resourcePermissionLocalService.addResourcePermission(
 			_group.getCompanyId(), Group.class.getName(),
@@ -147,8 +251,8 @@ public class LayoutUtilityPageEntryServiceTest {
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
 				RandomTestUtil.randomString(), _group.getGroupId(), 0, 0, false,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				0);
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(), 0,
+				_serviceContext);
 
 		_resourcePermissionLocalService.setResourcePermissions(
 			_group.getCompanyId(), LayoutUtilityPageEntry.class.getName(),
@@ -178,8 +282,8 @@ public class LayoutUtilityPageEntryServiceTest {
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
 				RandomTestUtil.randomString(), _group.getGroupId(), 0, 0, true,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				0);
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(), 0,
+				_serviceContext);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
@@ -198,12 +302,12 @@ public class LayoutUtilityPageEntryServiceTest {
 		LayoutUtilityPageEntry layoutUtilityPageEntry1 =
 			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
 				RandomTestUtil.randomString(), _group.getGroupId(), 0, 0, true,
-				RandomTestUtil.randomString(), type, 0);
+				RandomTestUtil.randomString(), type, 0, _serviceContext);
 
 		LayoutUtilityPageEntry layoutUtilityPageEntry2 =
 			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
 				RandomTestUtil.randomString(), _group.getGroupId(), 0, 0, false,
-				RandomTestUtil.randomString(), type, 0);
+				RandomTestUtil.randomString(), type, 0, _serviceContext);
 
 		_resourcePermissionLocalService.addResourcePermission(
 			_group.getCompanyId(), Group.class.getName(),
@@ -255,8 +359,8 @@ public class LayoutUtilityPageEntryServiceTest {
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
 				RandomTestUtil.randomString(), _group.getGroupId(), 0, 0, true,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				0);
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(), 0,
+				_serviceContext);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
@@ -273,8 +377,8 @@ public class LayoutUtilityPageEntryServiceTest {
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
 				RandomTestUtil.randomString(), _group.getGroupId(), 0, 0, true,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				0);
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(), 0,
+				_serviceContext);
 
 		_resourcePermissionLocalService.addResourcePermission(
 			_group.getCompanyId(), Group.class.getName(),
@@ -309,11 +413,17 @@ public class LayoutUtilityPageEntryServiceTest {
 	private Group _group;
 
 	@Inject
+	private Language _language;
+
+	@Inject
 	private LayoutUtilityPageEntryLocalService
 		_layoutUtilityPageEntryLocalService;
 
 	@Inject
 	private LayoutUtilityPageEntryService _layoutUtilityPageEntryService;
+
+	@Inject
+	private PortletFileRepository _portletFileRepository;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
@@ -323,6 +433,8 @@ public class LayoutUtilityPageEntryServiceTest {
 
 	@Inject
 	private RoleLocalService _roleLocalService;
+
+	private ServiceContext _serviceContext;
 
 	@DeleteAfterTestRun
 	private User _user;

@@ -21,10 +21,10 @@ export default function getDTOFromMDFRequestActivity(
 	externalReferenceCodeSF?: string
 ): MDFRequestActivityDTO {
 	const activityDescription = {...mdfRequestActivity.activityDescription};
-	delete mdfRequestActivity.activityDescription;
 
 	return {
 		...activityDescription,
+		activityStatus: mdfRequestActivity.activityStatus,
 		...mdfRequestActivity,
 		externalReferenceCodeSF,
 		leadFollowUpStrategies: activityDescription.leadFollowUpStrategies?.join(

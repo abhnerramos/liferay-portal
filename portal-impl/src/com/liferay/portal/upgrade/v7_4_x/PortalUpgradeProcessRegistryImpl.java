@@ -153,7 +153,8 @@ public class PortalUpgradeProcessRegistryImpl
 			new Version(14, 0, 2), new UpgradeCountryCode());
 
 		upgradeVersionTreeMap.put(
-			new Version(15, 0, 0), new UpgradeOrgGroupRole());
+			new Version(15, 0, 0),
+			UpgradeProcessFactory.dropTables("OrgGroupRole"));
 
 		upgradeVersionTreeMap.put(
 			new Version(16, 0, 0), new DummyUpgradeProcess());
@@ -259,6 +260,10 @@ public class PortalUpgradeProcessRegistryImpl
 
 		upgradeVersionTreeMap.put(
 			new Version(25, 1, 2), new DummyUpgradeProcess());
+
+		upgradeVersionTreeMap.put(
+			new Version(25, 2, 0),
+			new CTModelUpgradeProcess("LayoutPrototype"));
 	}
 
 }

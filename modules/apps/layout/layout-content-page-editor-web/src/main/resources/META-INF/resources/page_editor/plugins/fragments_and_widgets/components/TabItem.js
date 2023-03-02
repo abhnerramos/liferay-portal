@@ -15,14 +15,14 @@
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayCard from '@clayui/card';
 import ClayIcon from '@clayui/icon';
-import {useEventListener} from '@liferay/frontend-js-react-web';
 import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useState} from 'react';
 
 import {FRAGMENTS_DISPLAY_STYLES} from '../../../app/config/constants/fragmentsDisplayStyles';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../app/config/constants/layoutDataItemTypes';
+import {LIST_ITEM_TYPES} from '../../../app/config/constants/listItemTypes';
 import {
 	useDisableKeyboardMovement,
 	useSetMovementSource,
@@ -34,6 +34,7 @@ import addWidget from '../../../app/thunks/addWidget';
 import toggleFragmentHighlighted from '../../../app/thunks/toggleFragmentHighlighted';
 import toggleWidgetHighlighted from '../../../app/thunks/toggleWidgetHighlighted';
 import {useDragSymbol} from '../../../app/utils/drag_and_drop/useDragAndDrop';
+import useKeyboardNavigation from '../hooks/useKeyboardNavigation';
 
 const ITEM_PROPTYPES_SHAPE = PropTypes.shape({
 	data: PropTypes.object.isRequired,
@@ -105,16 +106,16 @@ export default function TabItem({displayStyle, item}) {
 	return displayStyle === FRAGMENTS_DISPLAY_STYLES.CARDS ? (
 		<CardItem
 			disabled={item.disabled || isDraggingSource}
+			handlerRef={item.disabled ? null : sourceRef}
 			item={item}
 			onToggleHighlighted={onToggleHighlighted}
-			ref={sourceRef}
 		/>
 	) : (
 		<ListItem
 			disabled={item.disabled || isDraggingSource}
+			handlerRef={item.disabled ? null : sourceRef}
 			item={item}
 			onToggleHighlighted={onToggleHighlighted}
-			ref={item.disabled ? null : sourceRef}
 		/>
 	);
 }
@@ -124,19 +125,31 @@ TabItem.propTypes = {
 	item: ITEM_PROPTYPES_SHAPE.isRequired,
 };
 
-const ListItem = React.forwardRef(
-	({disabled, item, onToggleHighlighted}, ref) => {
-		return (
-			<li
-				className={classNames(
-					'align-items-center d-flex justify-content-between mb-1 page-editor__fragments-widgets__tab-list-item rounded',
-					{
-						disabled,
-						'ml-3 page-editor__fragments-widgets__tab-portlet-item':
-							item.data.portletItemId,
-					}
-				)}
-				ref={ref}
+const ListItem = ({disabled, handlerRef, item, onToggleHighlighted}) => {
+	const {isTarget, setElement} = useKeyboardNavigation({
+		type: LIST_ITEM_TYPES.listItem,
+	});
+
+	const [isActive, setIsActive] = useState(false);
+
+	return (
+		<li
+			className={classNames(
+				'mb-1 page-editor__fragments-widgets__tab-list-item rounded',
+				{
+					disabled,
+					'ml-3 page-editor__fragments-widgets__tab-portlet-item':
+						item.data.portletItemId,
+					'page-editor__fragments-widgets__tab-list-item--active': isActive,
+				}
+			)}
+			ref={setElement}
+			role="menuitem"
+			tabIndex={isTarget ? 0 : -1}
+		>
+			<div
+				className="align-items-center d-flex h-100 justify-content-between w-100"
+				ref={handlerRef}
 			>
 				<div className="align-items-center d-flex page-editor__fragments-widgets__tab-list-item-body">
 					<ClayIcon className="mr-3" symbol={item.icon} />
@@ -144,33 +157,53 @@ const ListItem = React.forwardRef(
 					<div className="text-truncate title">{item.label}</div>
 				</div>
 
-				{!disabled && <AddButton item={item} />}
+				{!disabled && (
+					<AddButton
+						isNavigationTarget={isTarget}
+						item={item}
+						setItemActive={setIsActive}
+					/>
+				)}
 
 				<HighlightButton
+					isNavigationTarget={isTarget}
 					item={item}
 					onToggleHighlighted={onToggleHighlighted}
+					setItemActive={setIsActive}
 				/>
-			</li>
-		);
-	}
-);
+			</div>
+		</li>
+	);
+};
 
 ListItem.propTypes = {
 	disabled: PropTypes.bool.isRequired,
+	handlerRef: PropTypes.func.isRequired,
 	item: ITEM_PROPTYPES_SHAPE.isRequired,
 	onToggleHighlighted: PropTypes.func.isRequired,
 };
 
-const CardItem = React.forwardRef(
-	({disabled, item, onToggleHighlighted}, ref) => {
-		return (
-			<li
-				className={classNames(
-					'page-editor__fragments-widgets__tab-card-item',
-					{disabled}
-				)}
-				ref={ref}
-			>
+const CardItem = ({disabled, handlerRef, item, onToggleHighlighted}) => {
+	const {isTarget, setElement} = useKeyboardNavigation({
+		type: LIST_ITEM_TYPES.listItem,
+	});
+
+	const [isActive, setIsActive] = useState(false);
+
+	return (
+		<li
+			className={classNames(
+				'page-editor__fragments-widgets__tab-card-item',
+				{
+					disabled,
+					'page-editor__fragments-widgets__tab-list-item--active': isActive,
+				}
+			)}
+			ref={setElement}
+			role="menuitem"
+			tabIndex={isTarget ? 0 : -1}
+		>
+			<div ref={handlerRef}>
 				<ClayCard
 					aria-label={item.label}
 					className="mb-0"
@@ -211,40 +244,60 @@ const CardItem = React.forwardRef(
 							</div>
 
 							{!disabled && (
-								<div className="autofit-col">
-									<AddButton item={item} />
-								</div>
+								<AddButton
+									isNavigationTarget={isTarget}
+									item={item}
+									setItemActive={setIsActive}
+								/>
 							)}
 
-							<div className="autofit-col">
-								<HighlightButton
-									item={item}
-									onToggleHighlighted={onToggleHighlighted}
-								/>
-							</div>
+							<HighlightButton
+								isNavigationTarget={isTarget}
+								item={item}
+								onToggleHighlighted={onToggleHighlighted}
+								setItemActive={setIsActive}
+							/>
 						</ClayCard.Row>
 					</ClayCard.Body>
 				</ClayCard>
-			</li>
-		);
-	}
-);
+			</div>
+		</li>
+	);
+};
 
 CardItem.propTypes = {
 	disabled: PropTypes.bool.isRequired,
+	handlerRef: PropTypes.func.isRequired,
 	item: ITEM_PROPTYPES_SHAPE.isRequired,
 	onToggleHighlighted: PropTypes.func.isRequired,
 };
 
-const HighlightButton = ({item, onToggleHighlighted}) => {
+const HighlightButton = ({
+	isNavigationTarget,
+	item,
+	onToggleHighlighted,
+	setItemActive,
+}) => {
 	if (item.data.portletItemId) {
 		return null;
 	}
 
 	const {highlighted} = item;
+
 	const title = highlighted
 		? sub(Liferay.Language.get('unmark-x-as-favorite'), item.label)
 		: sub(Liferay.Language.get('mark-x-as-favorite'), item.label);
+
+	const onFocus = (event) => {
+		const addButton = event.target.previousSibling;
+		const sidebarResizer = document.querySelector(
+			'.page-editor__sidebar__resizer'
+		);
+
+		if ([addButton, sidebarResizer].includes(event.relatedTarget)) {
+			setItemActive(true);
+		}
+	};
 
 	return (
 		<ClayButtonWithIcon
@@ -255,25 +308,26 @@ const HighlightButton = ({item, onToggleHighlighted}) => {
 				{highlighted}
 			)}
 			displayType="secondary"
+			onBlur={() => setItemActive(false)}
 			onClick={onToggleHighlighted}
+			onFocus={onFocus}
 			symbol={highlighted ? 'star' : 'star-o'}
+			tabIndex={isNavigationTarget ? 0 : -1}
 			title={title}
 		/>
 	);
 };
 
 HighlightButton.propTypes = {
+	isNavigationTarget: PropTypes.bool.isRequired,
 	item: ITEM_PROPTYPES_SHAPE.isRequired,
 	onToggleHighlighted: PropTypes.func.isRequired,
+	setItemActive: PropTypes.func.isRequired,
 };
 
-const AddButton = ({item}) => {
+const AddButton = ({isNavigationTarget, item, setItemActive}) => {
 	const setMovementSource = useSetMovementSource();
 	const disableMovement = useDisableKeyboardMovement();
-
-	const buttonRef = useRef(null);
-
-	useEventListener('blur', () => disableMovement(), false, buttonRef.current);
 
 	return (
 		<ClayButtonWithIcon
@@ -281,6 +335,10 @@ const AddButton = ({item}) => {
 			borderless
 			className="mr-2 my-0 page-editor__fragments-widgets__tab__add-button"
 			displayType="secondary"
+			onBlur={() => {
+				setItemActive(false);
+				disableMovement();
+			}}
 			onClick={() =>
 				setMovementSource({
 					...item.data,
@@ -291,14 +349,16 @@ const AddButton = ({item}) => {
 					type: item.type,
 				})
 			}
-			ref={buttonRef}
-			role="application"
+			onFocus={() => setItemActive(true)}
 			symbol="plus"
+			tabIndex={isNavigationTarget ? 0 : -1}
 			title={sub(Liferay.Language.get('add-x'), item.label)}
 		/>
 	);
 };
 
 AddButton.propTypes = {
+	isNavigationTarget: PropTypes.bool.isRequired,
 	item: PropTypes.object.isRequired,
+	setItemActive: PropTypes.func.isRequired,
 };

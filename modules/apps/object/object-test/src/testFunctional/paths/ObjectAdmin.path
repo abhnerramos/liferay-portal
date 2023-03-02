@@ -472,7 +472,7 @@
 	</tr>
 	<tr>
 		<td>VIEW_ACTIONS_LABEL</td>
-		<td>//div[contains(@class, 'dnd-td') and contains(., '${key_actionName}')]</td>
+		<td>//div[contains(@class, 'dnd-td') and contains(., '${key_actionLabel}')]</td>
 		<td></td>
 	</tr>
 	<tr>
@@ -572,12 +572,12 @@
 	</tr>
 	<tr>
 		<td>CHOOSE_AN_OBJECT</td>
-		<td>//select[@class="form-control"]</td>
+		<td>//input[@placeholder="Choose an Object"]</td>
 		<td></td>
 	</tr>
 	<tr>
 		<td>CHOOSE_OBJECT_LABEL</td>
-		<td>//*[contains(@label,'Unrelated Objects')]//..//option[contains(.,'${key_objectLabel}')]</td>
+		<td>//button[contains(text(),'${key_objectLabel}')]</td>
 		<td></td>
 	</tr>
 	<tr>

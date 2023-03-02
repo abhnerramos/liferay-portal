@@ -56,6 +56,7 @@ import java.text.DateFormat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -359,7 +360,10 @@ public abstract class BaseWishListItemResourceTestCase {
 			assertEquals(
 				Arrays.asList(irrelevantWishListItem),
 				(List<WishListItem>)page.getItems());
-			assertValid(page);
+			assertValid(
+				page,
+				testGetWishListItemsPage_getExpectedActions(
+					irrelevantWishListId));
 		}
 
 		WishListItem wishListItem1 = testGetWishListItemsPage_addWishListItem(
@@ -376,11 +380,21 @@ public abstract class BaseWishListItemResourceTestCase {
 		assertEqualsIgnoringOrder(
 			Arrays.asList(wishListItem1, wishListItem2),
 			(List<WishListItem>)page.getItems());
-		assertValid(page);
+		assertValid(
+			page, testGetWishListItemsPage_getExpectedActions(wishListId));
 
 		wishListItemResource.deleteWishListItem(wishListItem1.getId());
 
 		wishListItemResource.deleteWishListItem(wishListItem2.getId());
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetWishListItemsPage_getExpectedActions(Long wishListId)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
 	}
 
 	@Test
@@ -651,6 +665,13 @@ public abstract class BaseWishListItemResourceTestCase {
 	}
 
 	protected void assertValid(Page<WishListItem> page) {
+		assertValid(page, Collections.emptyMap());
+	}
+
+	protected void assertValid(
+		Page<WishListItem> page,
+		Map<String, Map<String, String>> expectedActions) {
+
 		boolean valid = false;
 
 		java.util.Collection<WishListItem> wishListItems = page.getItems();
@@ -665,6 +686,20 @@ public abstract class BaseWishListItemResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+
+		Map<String, Map<String, String>> actions = page.getActions();
+
+		for (String key : expectedActions.keySet()) {
+			Map action = actions.get(key);
+
+			Assert.assertNotNull(key + " does not contain an action", action);
+
+			Map expectedAction = expectedActions.get(key);
+
+			Assert.assertEquals(
+				expectedAction.get("method"), action.get("method"));
+			Assert.assertEquals(expectedAction.get("href"), action.get("href"));
+		}
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -869,6 +904,10 @@ public abstract class BaseWishListItemResourceTestCase {
 
 		EntityModel entityModel = entityModelResource.getEntityModel(
 			new MultivaluedHashMap());
+
+		if (entityModel == null) {
+			return Collections.emptyList();
+		}
 
 		Map<String, EntityField> entityFieldsMap =
 			entityModel.getEntityFieldsMap();

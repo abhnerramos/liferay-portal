@@ -14,7 +14,7 @@ definition {
 	tearDown {
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
-		if ("${testPortalInstance}" == "true") {
+		if (${testPortalInstance} == "true") {
 			PortalInstances.tearDownCP();
 		}
 		else {
@@ -22,7 +22,7 @@ definition {
 
 			var response = HeadlessWebcontentAPI.returnAllstructuredContentId();
 
-			HeadlessWebcontentAPI.deleteAllStructuredContent(structuredContentId = "${response}");
+			HeadlessWebcontentAPI.deleteAllStructuredContent(structuredContentId = ${response});
 
 			JSONCategory.deleteVocabulary(
 				groupName = "Guest",
@@ -30,7 +30,7 @@ definition {
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
 	test CanConsumeGraphQLAPIsForHeadlessAdminContent {
 		property portal.acceptance = "true";
 
@@ -62,7 +62,7 @@ definition {
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
 	test CanConsumeGraphQLAPIsForHeadlessAdminTaxonomy {
 		property portal.acceptance = "true";
 
@@ -93,7 +93,7 @@ definition {
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
 	test CanConsumeGraphQLAPIsForHeadlessDelivery {
 		property portal.acceptance = "true";
 
@@ -124,7 +124,29 @@ definition {
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
+	test CanLoadAPIExplorerFromCustomContext {
+		property portal.acceptance = "true";
+		property portal.context = "world";
+		property skip.clean-app-server-deploy-dir = "true";
+		property test.name.skip.portal.instance = "HeadlessDiscovery#CanLoadAPIExplorerFromCustomContext";
+
+		task ("When I navigate to localhost:8080/world/o/api") {
+			var portalURL = PropsUtil.get("portal.url");
+
+			APIExplorer.navigateToOpenAPI();
+		}
+
+		task ("Then Liferay API Explorer loads correctly") {
+			var api = "headless-delivery";
+
+			AssertTextEquals(
+				locator1 = "Select#HEADLESS_SERVERS",
+				value1 = "${portalURL}/o/${api}/");
+		}
+	}
+
+	@priority = 5
 	test CanLoadHeadlessAdminContentOpenAPI {
 		property portal.acceptance = "true";
 
@@ -132,7 +154,7 @@ definition {
 			var api = "headless-admin-content";
 
 			APIExplorer.navigateToOpenAPI(
-				api = "${api}",
+				api = ${api},
 				version = "v1.0");
 		}
 
@@ -147,7 +169,7 @@ definition {
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
 	test CanLoadHeadlessAdminTaxonomyOpenAPI {
 		property portal.acceptance = "true";
 
@@ -155,7 +177,7 @@ definition {
 			var api = "headless-admin-taxonomy";
 
 			APIExplorer.navigateToOpenAPI(
-				api = "${api}",
+				api = ${api},
 				version = "v1.0");
 		}
 
@@ -171,7 +193,7 @@ definition {
 	}
 
 	@description = "Load headless delivery openAPI explorer"
-	@priority = "5"
+	@priority = 5
 	test CanLoadHeadlessDeliveryOpenAPI {
 		property portal.acceptance = "true";
 
@@ -192,7 +214,7 @@ definition {
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
 	test CanRetrieveSiteBlogPostingsWithHeadlessDeliveryOpenAPI {
 		property portal.acceptance = "true";
 
@@ -217,11 +239,11 @@ definition {
 			AssertTextEquals(
 				locator1 = "OpenAPI#RESPONSE_CODE",
 				method = "getSiteBlogPostingsPage",
-				value1 = "200");
+				value1 = 200);
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
 	test CanRetrieveSiteKeywordsWithHeadlessAdminTaxonomyOpenAPI {
 		property portal.acceptance = "true";
 
@@ -246,11 +268,11 @@ definition {
 			AssertTextEquals(
 				locator1 = "OpenAPI#RESPONSE_CODE",
 				method = "getSiteKeywordsPage",
-				value1 = "200");
+				value1 = 200);
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
 	test CanRetrieveSiteStructuredContentsWithHeadlessAdminContentOpenAPI {
 		property portal.acceptance = "true";
 
@@ -275,11 +297,11 @@ definition {
 			AssertTextEquals(
 				locator1 = "OpenAPI#RESPONSE_CODE",
 				method = "getSiteStructuredContentsPage",
-				value1 = "200");
+				value1 = 200);
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
 	test CanReturnExceptionOfUnacceptableHeaderWithHeadlessAdminContentOpenAPI {
 		property portal.acceptance = "true";
 
@@ -304,7 +326,7 @@ definition {
 			APIExplorer.executeAPIMethodWithParameters(
 				method = "postSiteTaxonomyVocabulary",
 				parameter = "siteId",
-				requestBody = "${requestBody}",
+				requestBody = ${requestBody},
 				service = "TaxonomyVocabulary");
 		}
 
@@ -320,7 +342,7 @@ definition {
 			AssertTextEquals(
 				locator1 = "OpenAPI#RESPONSE_CODE",
 				method = "postSiteTaxonomyVocabulary",
-				value1 = "406");
+				value1 = 406);
 
 			AssertTextEquals.assertPartialText(
 				locator1 = "OpenAPI#RESPONSE_BODY",
@@ -333,7 +355,7 @@ definition {
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
 	test HeaderWorksInNegativeCaseWithHeadlessAdminContentOpenAPI {
 		property portal.acceptance = "true";
 
@@ -379,7 +401,7 @@ definition {
 			APIExplorer.executeAPIMethodWithParameters(
 				method = "postSiteStructuredContentDraft",
 				parameter = "siteId",
-				requestBody = "${requestBody}",
+				requestBody = ${requestBody},
 				service = "StructuredContent");
 		}
 
@@ -395,7 +417,7 @@ definition {
 			AssertTextEquals(
 				locator1 = "OpenAPI#RESPONSE_CODE",
 				method = "postSiteStructuredContentDraft",
-				value1 = "400");
+				value1 = 400);
 
 			AssertTextEquals.assertPartialText(
 				locator1 = "OpenAPI#RESPONSE_BODY",
@@ -408,7 +430,7 @@ definition {
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
 	test HeaderWorksInNegativeCaseWithHeadlessDeliveryOpenAPI {
 		property portal.acceptance = "true";
 
@@ -454,7 +476,7 @@ definition {
 			APIExplorer.executeAPIMethodWithParameters(
 				method = "postSiteStructuredContent",
 				parameter = "siteId",
-				requestBody = "${requestBody}",
+				requestBody = ${requestBody},
 				service = "StructuredContent");
 		}
 
@@ -470,7 +492,7 @@ definition {
 			AssertTextEquals(
 				locator1 = "OpenAPI#RESPONSE_CODE",
 				method = "postSiteStructuredContent",
-				value1 = "400");
+				value1 = 400);
 
 			AssertTextEquals.assertPartialText(
 				locator1 = "OpenAPI#RESPONSE_BODY",
@@ -483,7 +505,7 @@ definition {
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
 	test HeaderWorksInPositiveCaseWithHeadlessAdminContentOpenAPI {
 		property portal.acceptance = "true";
 
@@ -533,7 +555,7 @@ definition {
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
 	test HeaderWorksInPositiveCaseWithHeadlessAdminTaxonomyOpenAPI {
 		property portal.acceptance = "true";
 
@@ -582,7 +604,7 @@ definition {
 		}
 	}
 
-	@priority = "5"
+	@priority = 5
 	test HeaderWorksInPositiveCaseWithHeadlessDeliveryOpenAPI {
 		property portal.acceptance = "true";
 

@@ -21,6 +21,7 @@ import {KeyedMutator} from 'swr';
 import Form from '../../../components/Form';
 import Container from '../../../components/Layout/Container';
 import MarkdownPreview from '../../../components/Markdown';
+import SearchBuilder from '../../../core/SearchBuilder';
 import {useHeader} from '../../../hooks';
 import {useFetch} from '../../../hooks/useFetch';
 import useFormActions from '../../../hooks/useFormActions';
@@ -33,7 +34,6 @@ import {
 	createRequirement,
 	updateRequirement,
 } from '../../../services/rest';
-import {searchUtil} from '../../../util/search';
 
 type RequirementsFormType = typeof yupSchema.requirement.__outputType;
 
@@ -76,7 +76,7 @@ const RequirementsForm = () => {
 	const {data: testrayComponentsData} = useFetch<
 		APIResponse<TestrayComponent>
 	>(
-		`/components?fields=id,name&filter=${searchUtil.eq(
+		`/components?fields=id,name&filter=${SearchBuilder.eq(
 			'projectId',
 			projectId as string
 		)}&pageSize=1000`

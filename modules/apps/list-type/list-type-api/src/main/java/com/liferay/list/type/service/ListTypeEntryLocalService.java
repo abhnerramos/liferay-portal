@@ -128,6 +128,9 @@ public interface ListTypeEntryLocalService
 	public ListTypeEntry deleteListTypeEntry(long listTypeEntryId)
 		throws PortalException;
 
+	public void deleteListTypeEntryByListTypeDefinitionId(
+		long listTypeDefinitionId);
+
 	/**
 	 * @throws PortalException
 	 */
@@ -216,7 +219,8 @@ public interface ListTypeEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ListTypeEntry fetchListTypeEntryByExternalReferenceCode(
-		String externalReferenceCode, long companyId);
+		String externalReferenceCode, long companyId,
+		long listTypeDefinitionId);
 
 	/**
 	 * Returns the list type entry with the matching UUID and company.
@@ -288,7 +292,8 @@ public interface ListTypeEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ListTypeEntry getListTypeEntryByExternalReferenceCode(
-			String externalReferenceCode, long companyId)
+			String externalReferenceCode, long companyId,
+			long listTypeDefinitionId)
 		throws PortalException;
 
 	/**
