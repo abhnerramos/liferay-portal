@@ -177,7 +177,7 @@ definition {
 				TestUtils.pass(message = "Test passed: Alert toast with action disappeared after 10 seconds");
 			}
 			else {
-				fail("Test failed: Clay Toast alert with action is still present after 10 seconds.");
+				fail("Test failed: Clay Toast alert with action is still present after 10 seconds of showing time.");
 			}
 		}
 	}
