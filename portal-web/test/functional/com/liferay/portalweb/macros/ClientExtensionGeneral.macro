@@ -80,6 +80,10 @@ definition {
 		ClientExtensionGeneral.addThemeSvgSpritemapElement(
 			entryName = ${entryName},
 			entryURL = ${entryURL});
+		
+		if (${entryName} == "external_url_theme") {
+			Check.checkToggleSwitch(locator1 = "ClientExtension#ENABLE_SVG_CROSS_DOMAIN_SUPPORT");
+		}
 
 		PortletEntry.publish();
 	}
