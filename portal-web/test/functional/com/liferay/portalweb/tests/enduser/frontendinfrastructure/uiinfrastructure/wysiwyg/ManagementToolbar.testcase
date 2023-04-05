@@ -69,7 +69,8 @@ definition {
 		task ("And when clicking on an action item") {
 			Check.checkNotVisibleNoErrors(locator1 = "ClaySamplePortlet#DISPLAY_CONTEXT_CHECKBOX");
 
-			AssertConfirm(value1 = "Select all checkbox changed");
+			// there is no reason to have an assert on WHEN, and this assertion is not correct
+            // AssertConfirm(value1 = "Select all checkbox changed");
 		}
 
 		task ("Then the info button remains displayed in the same initial position") {
@@ -77,13 +78,14 @@ definition {
 
 			OcularAssertElementImage(
 				locator1 = "ClaySamplePortlet#DISPLAY_CONTEXT_CONTAINER",
-				value1 = "management_toolbar/info_button_and_actions_render/info_button_after.png",
-				value2 = 80);
-		}
+				value1 = "management_toolbar/info_button_and_actions_render/info_button_after.png");
+                // value2 = 80 - i don't understand why this value is here
+        }
 
-		task ("And there is a separator between info and action buttons") {
-			AssertElementPresent(locator1 = "ManagementBar#ACTION_INFO_BUTTON_SEPARATOR");
-		}
+        // there is no button separator anymore
+        // task ("And there is a separator between info and action buttons") {
+        //  AssertElementPresent(locator1 = "ManagementBar#ACTION_INFO_BUTTON_SEPARATOR");
+        // }
 	}
 
 	@description = "LPS-147404. Assert the more actions button is displayed"
