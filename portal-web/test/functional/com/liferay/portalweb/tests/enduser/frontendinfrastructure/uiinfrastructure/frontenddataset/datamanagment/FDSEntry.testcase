@@ -192,6 +192,10 @@ definition {
 			AssertElementPresent(locator1 = "ObjectPortlet#DELETE_ENTRY_BUTTON");
 
 			AssertElementPresent(locator1 = "FrontendDataSetAdmin#VIEW_ENTRY_BUTTON");
+
+			Click(
+				key_entry = "Test Dataset",
+				locator1 = "ObjectPortlet#ENTRY_KEBAB_MENU");
 		}
 	}
 
