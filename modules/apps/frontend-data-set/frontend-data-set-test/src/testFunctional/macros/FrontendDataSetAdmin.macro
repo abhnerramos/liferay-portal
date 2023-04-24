@@ -18,6 +18,19 @@ definition {
 		PortletEntry.save();
 	}
 
+	macro createDatasetEntryViaAPI {
+		if (${restApplication} == "/c/fdsentries") {
+			var restSchema = "FDSEntry";
+			var restEndpoint = "/";
+		}
+
+		JSONFrontendDatasetEntries._createDatasetEntry(
+			datasetName = ${datasetName},
+			restApplication = ${restApplication},
+			restEndpoint = ${restEndpoint},
+			restSchema = ${restSchema});
+	}
+
 	macro createDataSetView {
 		LexiconEntry.gotoAdd();
 
@@ -40,19 +53,6 @@ definition {
 		AssertElementPresent(
 			locator1 = "Message#EMPTY_STATE_INFO",
 			value1 = "No Results Found");
-	}
-
-	macro createDatasetEntryViaAPI {
-		if(${restApplication} == "/c/fdsentries") {
-			var restSchema = "FDSEntry";
-			var restEndpoint = "/";
-		}
-
-		JSONFrontendDatasetEntries._createDatasetEntry(
-			datasetName = ${datasetName},
-			restApplication = ${restApplication},
-			restEndpoint = ${restEndpoint},
-			restSchema = ${restSchema});
 	}
 
 	macro deleteDataSet {
