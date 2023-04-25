@@ -34,7 +34,7 @@ definition {
 
 	@description = "Confirm that the user can change the pagination on the dataset admin page"
 	@priority = 4
-	test CanChangePaginationInAdminPage {
+	test CanAssertPagination {
 		task ("Given create 6 data sets") {
 			FrontendDataSetAdmin.createDataSet(
 				key_name = "Test Dataset 1",
