@@ -13,17 +13,8 @@ definition {
 
 		User.firstLoginPG();
 
-		task ("Given access Datasets admin page") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Object",
-				panel = "Control Panel",
-				portlet = "Datasets");
-
-			// Adding deleteAllDatasetEntries macro to solve the problem of CI starting with some dataset entries already created
-
-			if (IsElementPresent(key_itemName = "", locator1 = "FrontendDataSetAdmin#TABLE_CELL")) {
-				FrontendDataSetAdmin.deleteAllDatasetEntries();
-			}
+		task ("Given the list of dataset entries is empty ") {
+			FrontendDataSetAdmin.deleteAllDatasetEntries();
 		}
 	}
 
