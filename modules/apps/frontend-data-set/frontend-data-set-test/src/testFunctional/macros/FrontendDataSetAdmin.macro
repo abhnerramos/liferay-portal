@@ -89,7 +89,10 @@ definition {
 	}
 
 	macro deleteAllDatasetEntries {
-		FrontendDataSetAdmin.goToDatasetAdminPage();
+		ApplicationsMenu.gotoPortlet(
+			category = "Objects",
+			panel = "Control Panel",
+			portlet = "Datasets");
 
 		if (IsElementPresent(key_itemName = "", locator1 = "FrontendDataSetAdmin#TABLE_CELL")) {
 			JSONFrontendDatasetEntries._deleteFDSEntry();
