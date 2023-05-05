@@ -13,11 +13,8 @@ definition {
 
 		User.firstLoginPG();
 
-		task ("Given access Datasets admin page") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Object",
-				panel = "Control Panel",
-				portlet = "Datasets");
+		task ("Given the list of dataset entries is empty") {
+			FrontendDataSetAdmin.deleteAllDatasetEntries();
 		}
 	}
 
@@ -26,9 +23,6 @@ definition {
 
 		if (${testPortalInstance} == "true") {
 			PortalInstances.tearDownCP();
-		}
-		else {
-			FrontendDataSetAdmin.deleteAllDatasetEntries();
 		}
 	}
 
