@@ -14,7 +14,7 @@ definition {
 		User.firstLoginPG();
 
 		task ("Given the list of dataset entries is empty ") {
-			FrontendDataSetAdmin.deleteAllDatasetEntries();
+			FrontendDataSetAdmin.deleteAllDatasetEntriesViaUI();
 		}
 
 		task ("Given creating a Data Set via API") {
@@ -35,9 +35,6 @@ definition {
 
 		if (${testPortalInstance} == "true") {
 			PortalInstances.tearDownCP();
-		}
-		else {
-			FrontendDataSetAdmin.deleteAllDatasetEntries();
 		}
 	}
 

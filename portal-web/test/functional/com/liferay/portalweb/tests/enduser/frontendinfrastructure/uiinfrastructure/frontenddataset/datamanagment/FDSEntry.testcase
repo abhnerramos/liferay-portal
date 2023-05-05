@@ -14,7 +14,7 @@ definition {
 		User.firstLoginPG();
 
 		task ("Given the list of dataset entries is empty ") {
-			FrontendDataSetAdmin.deleteAllDatasetEntries();
+			FrontendDataSetAdmin.deleteAllDatasetEntriesViaUI();
 		}
 	}
 
@@ -22,10 +22,9 @@ definition {
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
 		if (${testPortalInstance} == "true") {
+			FrontendDataSetAdmin.deleteAllDatasetEntriesViaUI();
+
 			PortalInstances.tearDownCP();
-		}
-		else {
-			FrontendDataSetAdmin.deleteAllDatasetEntries();
 		}
 	}
 

@@ -102,6 +102,20 @@ definition {
 		}
 	}
 
+	macro deleteAllDatasetEntriesViaUI {
+		FrontendDataSetAdmin.goToDatasetAdminPage();
+
+		while(IsElementPresent(key_itemName = "", locator1 = "FrontendDataSetAdmin#TABLE_CELL")) {
+			FrontendDataSetAdmin.deleteDataSet(entry = "");
+
+			Refresh();
+		}
+
+		AssertElementPresent(
+				locator1 = "Message#EMPTY_STATE_INFO",
+				value1 = "No Results Found");
+	}
+
 	macro deleteDataSet {
 		Click(
 			key_entry = ${entry},
