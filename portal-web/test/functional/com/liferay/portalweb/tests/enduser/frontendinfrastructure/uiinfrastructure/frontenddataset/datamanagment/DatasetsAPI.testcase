@@ -32,7 +32,7 @@ definition {
 			FrontendDataSetAdmin.goToDatasetAdminPage();
 
 			FrontendDataSetAdmin.createDatasetEntryViaAPI(
-				datasetName = "Dataset Test",
+				datasetName = "CanCreateDatasetEntryViaAPI",
 				restApplication = "/c/fdsentries");
 		}
 
@@ -40,13 +40,13 @@ definition {
 			FrontendDataSetAdmin.goToDatasetAdminPage();
 
 			WaitForElementPresent(
-				key_itemName = "Dataset Test",
+				key_itemName = "CanCreateDatasetEntryViaAPI",
 				locator1 = "FrontendDataSetAdmin#TABLE_CELL");
 		}
 
 		task ("Then the data set is shown in the list") {
 			AssertElementPresent(
-				key_itemName = "Dataset Test",
+				key_itemName = "CanCreateDatasetEntryViaAPI",
 				locator1 = "FrontendDataSetAdmin#TABLE_CELL");
 		}
 	}
@@ -58,23 +58,23 @@ definition {
 			FrontendDataSetAdmin.goToDatasetAdminPage();
 
 			FrontendDataSetAdmin.createDatasetEntryViaAPI(
-				datasetName = "Dataset Test",
+				datasetName = "CanCreateViewsThroughAPI",
 				restApplication = "/c/fdsentries");
 		}
 
 		task ("And a dataset view created via api") {
 			FrontendDataSetAdmin.createFDSViewViaAPI(
-				datasetName = "Dataset Test",
+				datasetName = "CanCreateViewsThroughAPI",
 				dataSetViewDescription = "FDSViewDescription",
-				dataSetViewName = "View Test");
+				dataSetViewName = "CanCreateViewsThroughAPI");
 		}
 
 		task ("When access to View page of the dataset created.") {
-			FrontendDataSetAdmin.goToDatasetViewAdminPage(datasetName = "Dataset Test");
+			FrontendDataSetAdmin.goToDatasetViewAdminPage(datasetName = "CanCreateViewsThroughAPI");
 		}
 
 		task ("Then Confirm the dataset view was created.") {
-			FrontendDataSetAdmin.assertDataSetView(key_dataSetViewNameList = "View Test");
+			FrontendDataSetAdmin.assertDataSetView(key_dataSetViewNameList = "CanCreateViewsThroughAPI");
 		}
 	}
 
