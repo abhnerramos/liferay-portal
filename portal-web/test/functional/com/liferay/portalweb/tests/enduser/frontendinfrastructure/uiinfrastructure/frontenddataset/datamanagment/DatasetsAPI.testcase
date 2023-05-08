@@ -12,6 +12,10 @@ definition {
 		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
+
+		task ("Given the list of dataset entries is empty ") {
+			FrontendDataSetAdmin.deleteAllDatasetEntries();
+		}
 	}
 
 	tearDown {
