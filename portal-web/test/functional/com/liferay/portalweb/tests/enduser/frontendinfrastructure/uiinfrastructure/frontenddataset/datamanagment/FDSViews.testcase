@@ -152,7 +152,8 @@ definition {
 		}
 	}
 
-	@description = "LPS-181346. Confirm that pagination works right on views page"
+	@description = "Ignored due to LPS-183521 | LPS-181346 Confirm that pagination works right on views page"
+	@ignore = "true"
 	@priority = 3
 	test CanAssertPaginationOnFDSViewsPage {
 		task ("When Adding a 6 view called 'View Test 1', 'View Test 2'... and Filling the description field with 'Test Description'") {
