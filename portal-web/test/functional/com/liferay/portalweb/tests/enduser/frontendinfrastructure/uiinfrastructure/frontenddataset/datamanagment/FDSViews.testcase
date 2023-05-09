@@ -322,7 +322,8 @@ definition {
 		}
 	}
 
-	@description = "LPS-180893. Confirm that a dataset view can be deleted"
+	@description = "Ignored due to LPS-183521 | LPS-180893 Confirm that a dataset view can be deleted"
+	@ignore = "true"
 	@priority = 5
 	test CanDeleteView {
 		task ("When Add a new view") {
