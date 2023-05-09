@@ -241,7 +241,8 @@ definition {
 		}
 	}
 
-	@description = "LPS-181342. Confirm that the user can cancel a view criation by clicking on cancel button"
+	@description = "Ignored due to LPS-183521 | LPS-181342 Confirm that the user can cancel a view criation by clicking on cancel button"
+	@ignore = "true"
 	@priority = 5
 	test CanCancelViewCreationOnCancelButton {
 		task ("When Add a view with the name 'View Test") {
