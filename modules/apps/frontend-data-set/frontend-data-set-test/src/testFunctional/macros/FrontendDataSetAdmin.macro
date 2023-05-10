@@ -89,13 +89,20 @@ definition {
 	}
 
 	macro deleteAllDatasetEntries {
-		JSONFrontendDatasetEntries._deleteFDSEntry();
+		ApplicationsMenu.gotoPortlet(
+			category = "Objects",
+			panel = "Control Panel",
+			portlet = "Datasets");
 
-		FrontendDataSetAdmin.goToDatasetAdminPage();
+		if (IsElementPresent(key_itemName = "", locator1 = "FrontendDataSetAdmin#TABLE_CELL")) {
+			JSONFrontendDatasetEntries._deleteFDSEntry();
 
-		AssertElementPresent(
-			locator1 = "Message#EMPTY_STATE_INFO",
-			value1 = "No Results Found");
+			Refresh();
+
+			AssertElementPresent(
+				locator1 = "Message#EMPTY_STATE_INFO",
+				value1 = "No Results Found");
+		}
 	}
 
 	macro deleteDataSet {
