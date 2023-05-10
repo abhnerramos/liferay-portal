@@ -89,9 +89,13 @@ definition {
 	}
 
 	macro deleteAllDatasetEntries {
-		JSONFrontendDatasetEntries._deleteFDSEntry();
-
 		FrontendDataSetAdmin.goToDatasetAdminPage();
+
+		if (IsElementNotPresent(locator1 = "Message#EMPTY_STATE_INFO", value1 = "No Results Found")) {
+			JSONFrontendDatasetEntries._deleteFDSEntry();
+
+			Refresh();
+		}
 
 		AssertElementPresent(
 			locator1 = "Message#EMPTY_STATE_INFO",
@@ -149,7 +153,7 @@ definition {
 	}
 
 	macro goToDatasetAdminPage {
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/control_panel/manage?p_p_id=com_liferay_frontend_data_set_views_web_internal_portlet_FDSViewsPortlet");
+		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_frontend_data_set_views_web_internal_portlet_FDSViewsPortlet");
 	}
 
 	macro goToDatasetViewAdminPage {
