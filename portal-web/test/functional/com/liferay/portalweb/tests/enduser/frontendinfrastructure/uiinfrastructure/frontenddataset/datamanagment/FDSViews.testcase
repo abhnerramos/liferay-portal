@@ -13,18 +13,8 @@ definition {
 
 		User.firstLoginPG();
 
-		task ("Given creating a Data Set via API") {
-			FrontendDataSetAdmin.goToDatasetAdminPage();
-
-			FrontendDataSetAdmin.createDatasetEntryViaAPI(
-				datasetName = "Dataset Test",
-				restApplication = "/c/fdsentries");
-
-			Refresh();
-		}
-
-		task ("When go to the View page of the dataset created.") {
-			FrontendDataSetAdmin.goToViews(dataSetName = "Dataset Test");
+		task ("Given the list of dataset entries is empty ") {
+			FrontendDataSetAdmin.deleteAllDatasetEntries();
 		}
 	}
 
@@ -42,6 +32,18 @@ definition {
 	@description = "LPS-181348. Confirm that a dataset view can be deleted"
 	@priority = 5
 	test AssertNumberOfCharactersExceededInNameField {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "CharactersExceeded",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "CharactersExceeded");
+		}
+
 		task ("And Clicking add button") {
 			LexiconEntry.gotoAdd();
 		}
@@ -65,11 +67,25 @@ definition {
 		task ("Then confirm the error alert is present") {
 			Alert.viewErrorMessage(errorMessage = "Error:Your request failed to complete");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-181349. Confirm that description field is trunked if exceed 100 characters"
 	@priority = 4
 	test AssertNumberOfCharactersInDescriptionField {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "CharactersInDescriptionField",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "CharactersInDescriptionField");
+		}
+
 		task ("When go to add View with name View Test and description with 150 characters") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor accumsan luctus. Praesent feugiat nibh a lectus hendrerit lobortis. Donec blandit.",
@@ -79,11 +95,25 @@ definition {
 		task ("Then confirm the description value will be trunked") {
 			FrontendDataSetAdmin.assertDataSetViewDescription(key_dataSetViewDescriptionList = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor accumsan luctus. Praesent feugiat nibh a lectus hendrerit lobortis. Donec blandit.");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-181347. Confirm that field is trunked if exceed 100 characters"
 	@priority = 4
 	test CanAssertNameFieldIsTrunkedIfExceedCharacters {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "NameFieldIsTrunked",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "NameFieldIsTrunked");
+		}
+
 		task ("When Clicking add button, and a user types a name that is more than 100 characters until 280 characters, and Filling the description field with 'Test Description', and Clicking Save button") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Test Description",
@@ -93,11 +123,25 @@ definition {
 		task ("Then confirm the name value will be trunked") {
 			FrontendDataSetAdmin.assertDataSetView(key_dataSetViewNameList = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer non tincidunt ipsum. Quisque in justo a nibh sagittis auctor non at quam. Nulla facilisi. Donec feugiat, sapien at cursus orci aliquam.");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-181340. Confirm that the name field is required for creating a view"
 	@priority = 5
 	test CanAssertNameIsRequired {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "NameIsRequired",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "NameIsRequired");
+		}
+
 		task ("When Clicking add button") {
 			LexiconEntry.gotoAdd();
 		}
@@ -117,12 +161,26 @@ definition {
 				locator1 = "Message#ERROR",
 				value1 = "This field is required.");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "Ignored due to LPS-183521 | LPS-180899 Confirm that when adding several views, pagination is displayed correctly when placing as 4 items"
 	@ignore = "true"
 	@priority = 5
 	test CanAssertPagination {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "AssertPagination",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "AssertPagination");
+		}
+
 		task ("And Adding a 6 view called 'View Test 1', 'View Test 2'... and Filling the description field with 'Test Description'") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Test Description",
@@ -139,6 +197,8 @@ definition {
 			FrontendDataSetAdmin.assertDataSetView(key_dataSetViewNameList = "View Test 1,View Test 2,View Test 3,View Test 4");
 
 			Pagination.viewResults(results = "Showing 1 to 4 of 6 entries.");
+
+			takeScreenshot();
 		}
 
 		task ("When the user deletes two Views") {
@@ -150,11 +210,25 @@ definition {
 		task ("Then Confirm that only one page is displayed") {
 			Pagination.viewResults(results = "Showing 1 to 4 of 4 entries.");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-181346. Confirm that pagination works right on views page"
 	@priority = 3
 	test CanAssertPaginationOnFDSViewsPage {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "PaginationOnFDSViewsPage",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "PaginationOnFDSViewsPage");
+		}
+
 		task ("When Adding a 6 view called 'View Test 1', 'View Test 2'... and Filling the description field with 'Test Description'") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Test Description",
@@ -180,11 +254,25 @@ definition {
 
 			Pagination.viewResults(results = "Showing 5 to 6 of 6 entries.");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-180896 Confirm that the dataset view deletion is recoverable"
 	@priority = 5
 	test CanCancelDeletionOnCancelButton {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "DeletionOnCancelButton",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "DeletionOnCancelButton");
+		}
+
 		task ("When Add a new view") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Description Test",
@@ -206,11 +294,25 @@ definition {
 				key_itemName = "View Test",
 				locator1 = "FrontendDataSetAdmin#NAME_OF_VIEWS");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-180898. Confirm that the user can cancel deletion when clicking close (X) button"
 	@priority = 3
 	test CanCancelDeletionOnCloseButton {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "DeletionOnCloseButton",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "DeletionOnCloseButton");
+		}
+
 		task ("When Add a new view") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Description Test",
@@ -238,11 +340,25 @@ definition {
 		task ("Then The dataset is present in the data set Admin page") {
 			FrontendDataSetAdmin.assertDataSetView(key_dataSetViewNameList = "View Test");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-181342. Confirm that the user can cancel a view criation by clicking on cancel button"
 	@priority = 5
 	test CanCancelViewCreationOnCancelButton {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "CreationOnCancelButton",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "CreationOnCancelButton");
+		}
+
 		task ("When Add a view with the name 'View Test") {
 			LexiconEntry.gotoAdd();
 
@@ -264,11 +380,25 @@ definition {
 				entryName = "View Test",
 				locator1 = "FrontendDataSetAdmin#DATA_SET_VIEW_ENTRY_NAME");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-181354. Confirm that the user can create more than one view"
 	@priority = 4
 	test CanCreateMultipleViews {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "CreateMultipleViews",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "CreateMultipleViews");
+		}
+
 		task ("When Adding a new view called "View Test" and the description field with "Test Description"") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Test Description",
@@ -286,11 +416,25 @@ definition {
 
 			FrontendDataSetAdmin.assertDataSetView(key_dataSetViewNameList = "Bob Test");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-181339. Confirm that the user can create a view"
 	@priority = 5
 	test CanCreateView {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "CreateView",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "CreateView");
+		}
+
 		task ("When Filling the name with 'View Test' And Clicking Save button") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Test Description",
@@ -304,11 +448,25 @@ definition {
 		task ("And Confirm the description is 'Test Description'") {
 			FrontendDataSetAdmin.assertDataSetViewDescription(key_dataSetViewDescriptionList = "Test Description");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-181341. Confirm that The user can create a view with no description"
 	@priority = 4
 	test CanCreateViewWithNoDescription {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "CreateViewWithNoDescription",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "CreateViewWithNoDescription");
+		}
+
 		task ("When Clicking add button, And Filling the name with 'View Test', And Clicking the Save button") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "",
@@ -318,11 +476,25 @@ definition {
 		task ("Then Confirm Data set view was created") {
 			FrontendDataSetAdmin.assertDataSetView(key_dataSetViewNameList = "View Test");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-180893. Confirm that a dataset view can be deleted"
 	@priority = 5
 	test CanDeleteView {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "DeleteView",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "DeleteView");
+		}
+
 		task ("When Add a new view") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Description Test",
@@ -342,11 +514,25 @@ definition {
 				locator1 = "Message#EMPTY_STATE_INFO",
 				value1 = "No Results Found");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-181344. Assert that the user can edit or delet view"
 	@priority = 5
 	test CanEditOrDeleteView {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "EditOrDeleteView",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "EditOrDeleteView");
+		}
+
 		task ("When go to the View page of the dataset created, and click save button") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Description Test",
@@ -364,11 +550,25 @@ definition {
 
 			MenuItem.viewVisible(menuItem = "Delete");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-181343. Confirm that the user can edit a view"
 	@priority = 5
 	test CanEditView {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "EditView",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "EditView");
+		}
+
 		task ("When go to the View page of the dataset created, and click save button") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Description Test",
@@ -387,11 +587,25 @@ definition {
 
 			FrontendDataSetAdmin.assertDataSetViewDescription(key_dataSetViewDescriptionList = "Test Description edited");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-181353. Confirm that the user can search a view by its description"
 	@priority = 4
 	test CanSearchViewByDescription {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "SearchViewByDescription",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "SearchViewByDescription");
+		}
+
 		task ("When Adding a new view called 'View Test' and the description field with 'Test Description', And Clicking Save button") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Test Description",
@@ -411,11 +625,25 @@ definition {
 		task ("Then the corresponding view is displayed") {
 			FrontendDataSetAdmin.assertDataSetView(key_dataSetViewNameList = "Bob Test");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "LPS-181351. Confirm that the user can search a view by its name"
 	@priority = 4
 	test CanSearchViewByName {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "SearchViewByName",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "SearchViewByName");
+		}
+
 		task ("When Adding a new view called 'View Test' and the description field with 'Test Description'") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Test Description",
@@ -437,12 +665,26 @@ definition {
 				entryName = "View Test",
 				locator1 = "FrontendDataSetAdmin#DATA_SET_VIEW_ENTRY_NAME");
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "Ignored due to LPS-183521 | LPS-180895  Confirm that the view was really deleted"
 	@ignore = "true"
 	@priority = 5
 	test CanUpdateNumberOfViews {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "UpdateNumberOfViews",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "UpdateNumberOfViews");
+		}
+
 		task ("When Add a new view") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Description Test",
@@ -461,7 +703,7 @@ definition {
 
 		task ("When go to View admin page") {
 			Click(
-				key_entry = "Test Dataset",
+				key_entry = "UpdateNumberOfViews",
 				locator1 = "ObjectPortlet#ENTRY_KEBAB_MENU");
 
 			Click(locator1 = "FrontendDataSetAdmin#VIEW_ENTRY_BUTTON");
@@ -480,12 +722,26 @@ definition {
 				locator1 = "FrontendDataSetAdmin#NUMBER_OF_VIEWS",
 				numberOfViews = 0);
 		}
+
+		takeScreenshot();
 	}
 
 	@description = "Ignored due to LPS-183521 and LPS-183512 | LPS-181350. Confirm that special characters are confirmed in the display name on the page "
 	@ignore = "true"
 	@priority = 4
 	test CanUseSpecialCharactersInNameField {
+		task ("Given creating a Data Set via API") {
+			FrontendDataSetAdmin.goToDatasetAdminPage();
+
+			FrontendDataSetAdmin.createDatasetEntryViaAPI(
+				datasetName = "UseSpecialCharactersInNameField",
+				restApplication = "/c/fdsentries");
+
+			Refresh();
+
+			FrontendDataSetAdmin.goToViews(dataSetName = "UseSpecialCharactersInNameField");
+		}
+
 		task ("When Clicking add button, and Filling the Name field with, and Clicking Save button") {
 			FrontendDataSetAdmin.createDataSetView(
 				description = "Test Description",
@@ -499,6 +755,8 @@ definition {
 		task ("And Then Confirm the description is 'Test Description'") {
 			FrontendDataSetAdmin.assertDataSetViewDescription(key_dataSetViewDescriptionList = "Test Description");
 		}
+
+		takeScreenshot();
 	}
 
 }
