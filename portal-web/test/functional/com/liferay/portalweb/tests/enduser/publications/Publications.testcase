@@ -11,6 +11,10 @@ definition {
 		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
+
+		Publications.enablePublications();
+
+		Navigator.openURL();
 	}
 
 	tearDown {
@@ -915,6 +919,13 @@ definition {
 		AssertChecked.assertCheckedNotVisible(
 			key_roleTitle = "publications-user",
 			locator1 = "Permissions#CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX");
+	}
+
+	@priority = 2
+	test CreatePublicationScreen {
+		task ("Go to Create a Publication Screen") {
+			Publications.createNewPublication(publicationName = "Test Publications");
+		}
 	}
 
 	@priority = 4
